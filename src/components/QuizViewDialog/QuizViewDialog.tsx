@@ -1,5 +1,5 @@
 import "./QuizViewDialog.scss";
-import { Close } from "@mui/icons-material";
+import { Circle, CircleOutlined, Close } from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -7,6 +7,13 @@ import {
   Button,
   DialogContent,
   DialogActions,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemButton,
+  IconButton,
+  Alert,
 } from "@mui/material";
 
 export interface QuizViewDialogProps {
@@ -22,6 +29,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
         onClose={() => props.handleDialogClose()}
         fullWidth={true}
         maxWidth={"md"}
+        scroll="paper"
         aria-labelledby="quiz-view-dialog-title"
         aria-describedby="quiz-view-dialog-description"
       >
@@ -48,34 +56,72 @@ function QuizViewDialog(props: QuizViewDialogProps) {
             </Typography>
           </div>
           <div>
-            <Button
+            <IconButton
               aria-label="close quiz"
-              color="primary"
+              color="error"
               size="large"
-              variant="contained"
               onClick={() => props.handleDialogClose()}
-              endIcon={<Close />}
             >
-              Close
-            </Button>
+              <Close />
+            </IconButton>
           </div>
         </DialogTitle>
         <DialogContent dividers={true} id="quiz-view-dialog-content">
-          {/* list of existing questions */}
+          {/* display current question */}
           <div>
-            <div></div>
+            <div className="quiz-view-content-title-wrapper">
+              <Typography
+                gutterBottom
+                id="quiz-view-dialog-title-question-text"
+                variant="h6"
+                component="div"
+              >
+                {"#1 :: " + "What is the something?"}
+              </Typography>
+            </div>
+            <div className="quiz-view-content-questions-wrapper">
+              <List>
+                <ListItem>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <CircleOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary="a) Answer Text" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <Circle />
+                    </ListItemIcon>
+                    <ListItemText primary="b) Answer Text" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <CircleOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary="c) Answer Text" />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </div>
+            <div className="quiz-view-content-questions-check row">
+              <Button variant="contained">Check Answer</Button>
+              <Alert severity="success">This is a success Alert.</Alert>
+              {/* <Alert severity="error">This is an error Alert.</Alert> */}
+            </div>
           </div>
           {/* footer close & submit */}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => console.log("previous clicked")}>
-            Previous
-          </Button>
           <Button
             variant="contained"
-            onClick={() => console.log("next clicked")}
+            color="success"
+            onClick={() => console.log("submit clicked")}
           >
-            Next
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
