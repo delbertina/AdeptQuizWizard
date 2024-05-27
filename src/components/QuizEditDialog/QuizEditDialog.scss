@@ -1,0 +1,16 @@
+#quiz-edit-dialog-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  #quiz-edit-dialog-title-column {
+    display: flex;
+    flex-direction: column;
+    margin-right: 24px;
+  }
+  
+  #quiz-edit-dialog-content {
+    background-color: #dddddd;
+  }
+  
