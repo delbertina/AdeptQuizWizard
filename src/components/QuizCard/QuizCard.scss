@@ -1,0 +1,16 @@
+.quiz-card {
+    margin: 24px;
+    cursor: pointer;
+    min-width: 220px;
+    text-align: start;
+}
+
+.quiz-card-header {
+    background-color: var(--secondary-main);
+    color: var(--secondary-contrastText);
+}
+
+.quiz-card-wrapper {
+    background-color: var(--secondary-light);
+    color: var(--secondary-contrastText);
+}
