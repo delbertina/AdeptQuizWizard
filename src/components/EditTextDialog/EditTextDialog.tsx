@@ -55,7 +55,7 @@ function EditTextDialog(props: EditTextDialogProps) {
           type="text"
           fullWidth
           variant="standard"
-          defaultValue={"something"}
+          defaultValue={props.dialogFieldValue}
         />
       </DialogContent>
       <DialogActions>
