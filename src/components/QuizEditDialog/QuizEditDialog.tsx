@@ -122,7 +122,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
     }
     const tempQuiz = quiz;
     tempQuiz.questions[qindex].correctAnswerId = aindex;
-    setQuiz(tempQuiz);
+    setQuiz({...tempQuiz});
   }
 
   useEffect(() => {
@@ -250,11 +250,11 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                 {question.answers.map((answer, aindex) => (
                 <div className="quiz-edit-dialog-content-question-answer-row row" key={aindex}>
                   <div className="quiz-edit-dialog-content-question-answer-row-start-actions">
-                    <IconButton onClick={() => handleSelectCorrectAnswer(qindex, aindex)}>
-                      {answer.id === question.correctAnswerId && (
+                    <IconButton onClick={() => handleSelectCorrectAnswer(qindex, answer.id)}>
+                      {answer.id === quiz.questions[qindex].correctAnswerId && (
                         <Circle />
                       )}
-                      {answer.id !== question.correctAnswerId && (
+                      {answer.id !== quiz.questions[qindex].correctAnswerId && (
                       <CircleOutlined />
                       )}
                     </IconButton>
