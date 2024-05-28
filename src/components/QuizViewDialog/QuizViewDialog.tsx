@@ -15,13 +15,51 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
+import { Quiz } from "../../types/quiz";
+import { Score } from "../../types/score";
+import { useEffect, useState } from "react";
 
 export interface QuizViewDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: (id?: number) => void;
+  quiz: Quiz;
+  handleDialogClose: (score?: Score) => void;
 }
 
 function QuizViewDialog(props: QuizViewDialogProps) {
+  const [selectedAnswers, setSelectedAnswers] = useState<Array<number>>([]);
+  const [checkedAnswers, setCheckedAnswers] = useState<Array<number>>([]);
+
+  const handleQuizSubmit = (): void => {
+    const correctAns = props.quiz.questions.filter((question, index) => question.correctAnswerId === checkedAnswers[index]).length;
+    const totalAns = props.quiz.questions.length;
+    const timestamp = Date.now().valueOf();
+    const scoreStr = Math.ceil(correctAns/totalAns) + "%";
+    props.handleDialogClose({
+      quizId: props.quiz.id,
+      result: scoreStr,
+      timestamp: timestamp
+    })
+  }
+
+  const handleAnswerSelect = (questionId: number, answerId: number): void => {
+    console.log("handle answer select: ", questionId, answerId);
+    let tempAnswers = selectedAnswers;
+    tempAnswers[questionId] = answerId;
+    setSelectedAnswers([...tempAnswers]);
+  };
+
+  const handleAnswerCheck = (questionId: number): void => {
+    console.log("handle answer check: " + questionId);
+    let tempAnswers = checkedAnswers;
+    tempAnswers[questionId] = selectedAnswers[questionId];
+    setCheckedAnswers([...tempAnswers]);
+  }
+
+  useEffect(() => {
+    setSelectedAnswers(Array(props.quiz.questions.length).map(() => -1));
+    setCheckedAnswers(Array(props.quiz.questions.length).map(() => -1));
+  }, [props.quiz]);
+
   return (
     <>
       <Dialog
@@ -42,8 +80,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               variant="h5"
               component="div"
             >
-              Quiz
-              {/* Put quiz name here */}
+              {props.quiz.title}
             </Typography>
             <Typography
               gutterBottom
@@ -51,8 +88,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               variant="body1"
               component="div"
             >
-              View quiz
-              {/* Put quiz description here */}
+              {props.quiz.description}
             </Typography>
           </div>
           <div>
@@ -68,58 +104,72 @@ function QuizViewDialog(props: QuizViewDialogProps) {
         </DialogTitle>
         <DialogContent dividers={true} id="quiz-view-dialog-content">
           {/* display current question */}
-          <div>
-            <div className="quiz-view-content-title-wrapper">
-              <Typography
-                gutterBottom
-                id="quiz-view-dialog-title-question-text"
-                variant="h6"
-                component="div"
-              >
-                {"#1 :: " + "What is the something?"}
-              </Typography>
+          {props.quiz.questions.map((question, qIndex) => (
+            <div key={qIndex}>
+              <div className="quiz-view-content-title-wrapper">
+                <Typography
+                  gutterBottom
+                  id="quiz-view-dialog-title-question-text"
+                  variant="h6"
+                  component="div"
+                >
+                  {"#" + (qIndex + 1) + " :: " + question.text}
+                </Typography>
+              </div>
+              <div className="quiz-view-content-questions-wrapper">
+                <List>
+                  {question.answers.map((answer, aIndex) => (
+                    <ListItem
+                      key={aIndex}
+                    >
+                      <ListItemButton onClick={() => handleAnswerSelect(qIndex, answer.id)} disabled={checkedAnswers.length > qIndex && !!checkedAnswers[qIndex]} >
+                        <ListItemIcon>
+                          {selectedAnswers.length > qIndex &&
+                            selectedAnswers[qIndex] === answer.id && <Circle />}
+                          {selectedAnswers.length > qIndex &&
+                            selectedAnswers[qIndex] !== answer.id && (
+                              <CircleOutlined />
+                            )}
+                        </ListItemIcon>
+                        <ListItemText primary={answer.text} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </div>
+              <div className="quiz-view-content-questions-check row">
+                <Button
+                  variant="contained"
+                  onClick={() => handleAnswerCheck(qIndex)}
+                  disabled={
+                    ((selectedAnswers.length > qIndex &&
+                    selectedAnswers[qIndex] === question.correctAnswerId)
+                    || (checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0))
+                  }
+                >
+                  Check Answer
+                </Button>
+                {(checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0) && (
+                  <>
+                  {checkedAnswers[qIndex] === question.correctAnswerId && (
+                  <Alert severity="success">{question.feedbackTrue}</Alert>
+                  )}
+                  {checkedAnswers[qIndex] !== question.correctAnswerId && (
+                  <Alert severity="error">{question.feedbackFalse}</Alert>
+                  )}
+                  </>
+                )}
+              </div>
             </div>
-            <div className="quiz-view-content-questions-wrapper">
-              <List>
-                <ListItem>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <CircleOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary="a) Answer Text" />
-                  </ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <Circle />
-                    </ListItemIcon>
-                    <ListItemText primary="b) Answer Text" />
-                  </ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>
-                    <ListItemIcon>
-                      <CircleOutlined />
-                    </ListItemIcon>
-                    <ListItemText primary="c) Answer Text" />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </div>
-            <div className="quiz-view-content-questions-check row">
-              <Button variant="contained">Check Answer</Button>
-              <Alert severity="success">This is a success Alert.</Alert>
-              {/* <Alert severity="error">This is an error Alert.</Alert> */}
-            </div>
-          </div>
+          ))}
           {/* footer close & submit */}
         </DialogContent>
         <DialogActions>
           <Button
             variant="contained"
             color="success"
-            onClick={() => console.log("submit clicked")}
+            onClick={() => handleQuizSubmit()}
+            disabled={checkedAnswers.indexOf(-1) !== -1}
           >
             Submit
           </Button>
