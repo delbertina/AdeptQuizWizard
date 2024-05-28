@@ -110,7 +110,8 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       return;
     }
     const tempQuiz = quiz;
-    const maxIndex = Math.max(...(tempQuiz?.questions[qIndex].answers.map(answer => answer.id))??[0]);
+    const maxIndex = Math.max(...tempQuiz.questions[qIndex].answers.map(answer => answer.id), 0);
+    console.log("handle add answer", maxIndex);
     tempQuiz?.questions[qIndex].answers.push({id: maxIndex + 1, text: "New Answer"});
     setQuiz({...tempQuiz});
   }
@@ -163,7 +164,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
           <div>
             <IconButton
               aria-label="add question"
-              color="error"
+              color="success"
               onClick={() => handleAddQuestion()}
             >
               <Add />
