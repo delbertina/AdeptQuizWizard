@@ -28,12 +28,13 @@ export interface QuizViewDialogProps {
 function QuizViewDialog(props: QuizViewDialogProps) {
   const [selectedAnswers, setSelectedAnswers] = useState<Array<number>>([]);
   const [checkedAnswers, setCheckedAnswers] = useState<Array<number>>([]);
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   const handleQuizSubmit = (): void => {
     const correctAns = props.quiz.questions.filter((question, index) => question.correctAnswerId === checkedAnswers[index]).length;
     const totalAns = props.quiz.questions.length;
     const timestamp = Date.now().valueOf();
-    const scoreStr = Math.ceil(correctAns/totalAns) + "%";
+    const scoreStr = Math.ceil((correctAns/totalAns)*100)  + "%";
     props.handleDialogClose({
       quizId: props.quiz.id,
       result: scoreStr,
@@ -49,15 +50,16 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   };
 
   const handleAnswerCheck = (questionId: number): void => {
-    console.log("handle answer check: " + questionId);
+    console.log("handle answer check: " + questionId, checkedAnswers);
     let tempAnswers = checkedAnswers;
     tempAnswers[questionId] = selectedAnswers[questionId];
     setCheckedAnswers([...tempAnswers]);
+    setIsAllChecked(checkedAnswers.indexOf(-1) === -1);
   }
 
   useEffect(() => {
-    setSelectedAnswers(Array(props.quiz.questions.length).map(() => -1));
-    setCheckedAnswers(Array(props.quiz.questions.length).map(() => -1));
+    setSelectedAnswers(Array(props.quiz.questions.length).fill(-1));
+    setCheckedAnswers(Array(props.quiz.questions.length).fill(-1));
   }, [props.quiz]);
 
   return (
@@ -122,7 +124,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                     <ListItem
                       key={aIndex}
                     >
-                      <ListItemButton onClick={() => handleAnswerSelect(qIndex, answer.id)} disabled={checkedAnswers.length > qIndex && !!checkedAnswers[qIndex]} >
+                      <ListItemButton onClick={() => handleAnswerSelect(qIndex, answer.id)} disabled={checkedAnswers.length > qIndex && checkedAnswers[qIndex] > -1} >
                         <ListItemIcon>
                           {selectedAnswers.length > qIndex &&
                             selectedAnswers[qIndex] === answer.id && <Circle />}
@@ -143,7 +145,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                   onClick={() => handleAnswerCheck(qIndex)}
                   disabled={
                     ((selectedAnswers.length > qIndex &&
-                    selectedAnswers[qIndex] === question.correctAnswerId)
+                    selectedAnswers[qIndex] === -1)
                     || (checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0))
                   }
                 >
@@ -169,7 +171,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
             variant="contained"
             color="success"
             onClick={() => handleQuizSubmit()}
-            disabled={checkedAnswers.indexOf(-1) !== -1}
+            disabled={!isAllChecked}
           >
             Submit
           </Button>

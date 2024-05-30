@@ -24,8 +24,8 @@ function App() {
     console.log("edit dialog close: ", newQuiz);
     if (!!newQuiz) {
       const tempQuizzes = quizzes;
-      tempQuizzes.filter((quiz) => quiz.id === newQuiz.id);
-      setQuizzes([newQuiz, ...tempQuizzes]);
+      const filteredQuizzes = tempQuizzes.filter((quiz) => quiz.id !== newQuiz.id);
+      setQuizzes([newQuiz, ...filteredQuizzes]);
     }
     setIsEditDialogOpen(false);
     setCurrentQuiz(undefined);
