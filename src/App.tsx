@@ -21,7 +21,6 @@ function App() {
   };
 
   const handleEditDialogClose = (newQuiz?: Quiz): void => {
-    console.log("edit dialog close: ", newQuiz);
     if (!!newQuiz) {
       const tempQuizzes = quizzes;
       const filteredQuizzes = tempQuizzes.filter((quiz) => quiz.id !== newQuiz.id);
@@ -37,7 +36,6 @@ function App() {
   };
 
   const handleViewDialogClose = (score?: Score): void => {
-    console.log("edit dialog close: ", score);
     setIsViewDialogOpen(false);
     setCurrentQuiz(undefined);
   };

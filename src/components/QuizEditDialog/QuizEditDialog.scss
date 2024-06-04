@@ -18,7 +18,8 @@
 .quiz-edit-dialog-quiz-title,
 .quiz-edit-dialog-quiz-description,
 .quiz-edit-dialog-content-question-answer-row,
-.quiz-edit-dialog-content-list-header {
+.quiz-edit-dialog-content-list-header,
+.quiz-edit-dialog-content-question-feedback-row {
   justify-content: space-between;
 }
 
@@ -32,4 +33,29 @@
   &:hover {
     background-color: rgba(255,255,255,0.2);
   }
+}
+
+.quiz-edit-dialog-content-question-feedback-row,
+.quiz-edit-dialog-content-question-start {
+  align-items: center;
+}
+
+.quiz-edit-dialog-feedback-alert {
+  flex-grow: 1;
+  margin: 5px;
+}
+
+.quiz-edit-dialog-content-question-start {
+  width: unset;
+}
+
+#quiz-edit-dialog-content-question-text {
+  margin-bottom: unset;
+}
+
+.quiz-edit-dialog-content-question-text-end-actions,
+.quiz-edit-dialog-content-question-text-start-actions {
+  width: unset;
+  align-items: start;
+  height: 100%;
 }

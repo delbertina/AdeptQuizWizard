@@ -43,14 +43,12 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   }
 
   const handleAnswerSelect = (questionId: number, answerId: number): void => {
-    console.log("handle answer select: ", questionId, answerId);
     let tempAnswers = selectedAnswers;
     tempAnswers[questionId] = answerId;
     setSelectedAnswers([...tempAnswers]);
   };
 
   const handleAnswerCheck = (questionId: number): void => {
-    console.log("handle answer check: " + questionId, checkedAnswers);
     let tempAnswers = checkedAnswers;
     tempAnswers[questionId] = selectedAnswers[questionId];
     setCheckedAnswers([...tempAnswers]);
@@ -154,10 +152,10 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                 {(checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0) && (
                   <>
                   {checkedAnswers[qIndex] === question.correctAnswerId && (
-                  <Alert severity="success">{question.feedbackTrue}</Alert>
+                  <Alert className="quiz-view-content-questions-check-alert" severity="success">{question.feedbackTrue}</Alert>
                   )}
                   {checkedAnswers[qIndex] !== question.correctAnswerId && (
-                  <Alert severity="error">{question.feedbackFalse}</Alert>
+                  <Alert className="quiz-view-content-questions-check-alert" severity="error">{question.feedbackFalse}</Alert>
                   )}
                   </>
                 )}

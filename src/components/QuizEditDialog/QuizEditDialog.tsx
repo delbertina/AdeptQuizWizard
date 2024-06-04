@@ -17,6 +17,7 @@ import {
   DialogActions,
   IconButton,
   Divider,
+  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
@@ -37,6 +38,12 @@ function QuizEditDialog(props: QuizEditDialogProps) {
     useState<boolean>(false);
   const [isEditAnsTextDialogOpen, setIsEditAnsTextDialogOpen] =
     useState<boolean>(false);
+  const [
+    isEditQuesFeedbackTextDialogOpen,
+    setIsEditQuesFeedbackTextDialogOpen,
+  ] = useState<boolean>(false);
+  const [isEditCorrectFeedback, setIsEditCorrectFeedback] =
+    useState<boolean>(true);
   const [quiz, setQuiz] = useState<Quiz | undefined>();
   const [editQIndex, setEditQIndex] = useState<number>(-1);
   const [editAIndex, setEditAIndex] = useState<number>(-1);
@@ -100,6 +107,30 @@ function QuizEditDialog(props: QuizEditDialogProps) {
     setEditAIndex(-1);
   };
 
+  const handleEditFeedbackTextOpen = (
+    isCorrect: boolean,
+    qIndex: number
+  ): void => {
+    setEditQIndex(qIndex);
+    setIsEditCorrectFeedback(isCorrect);
+    setIsEditQuesFeedbackTextDialogOpen(true);
+  };
+
+  const handleEditFeedbackTextClose = (edited?: string): void => {
+    const tempQuiz = quiz;
+    if (!!edited && !!tempQuiz) {
+      if (!!isEditCorrectFeedback) {
+        tempQuiz.questions[editQIndex].feedbackTrue = edited;
+      } else {
+        tempQuiz.questions[editQIndex].feedbackFalse = edited;
+      }
+      setQuiz({ ...tempQuiz });
+    }
+    setEditQIndex(-1);
+    setIsEditCorrectFeedback(true);
+    setIsEditQuesFeedbackTextDialogOpen(false);
+  };
+
   const handleAddQuestion = (): void => {
     if (!quiz) {
       return;
@@ -140,7 +171,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       ...tempQuiz.questions[qIndex].answers.map((answer) => answer.id),
       0
     );
-    console.log("handle add answer", maxIndex);
     tempQuiz?.questions[qIndex].answers.push({
       id: maxIndex + 1,
       text: "New Answer",
@@ -160,7 +190,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleSelectCorrectAnswer = (qindex: number, aindex: number): void => {
-    console.log("handle select correct ", qindex, aindex);
     if (!quiz) {
       return;
     }
@@ -173,11 +202,11 @@ function QuizEditDialog(props: QuizEditDialogProps) {
     setIsSubmitDisabled(
       !quiz ||
         quiz.questions.length === 0 ||
+        quiz.questions.map((question) => question.answers.length).indexOf(0) !==
+          -1 ||
         quiz.questions
-          .map((question) => question.answers.length)
-          .indexOf(0) !== -1
-        || quiz.questions.map((question) => question.correctAnswerId)
-        .indexOf(-1) !== -1
+          .map((question) => question.correctAnswerId)
+          .indexOf(-1) !== -1
     );
   }, [quiz]);
 
@@ -272,7 +301,8 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             {quiz?.questions.map((question, qindex) => (
               <div className="quiz-edit-dialog-content-question" key={qindex}>
                 <div className="quiz-edit-dialog-content-question-text row">
-                  <div className="quiz-edit-dialog-content-question-text-start-actions">
+                  <div className="quiz-edit-dialog-content-question-start row">
+                  <div className="quiz-edit-dialog-content-question-text-start-actions row">
                     <IconButton disabled={true}>
                       <ArrowUpward />
                     </IconButton>
@@ -288,7 +318,8 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                   >
                     {question.text}
                   </Typography>
-                  <div className="quiz-edit-dialog-content-question-text-end-actions">
+                  </div>
+                  <div className="quiz-edit-dialog-content-question-text-end-actions row">
                     <IconButton
                       color="success"
                       onClick={() => handleAddAnswer(qindex)}
@@ -361,6 +392,44 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                     </div>
                   ))}
                 </div>
+                <div className="quiz-edit-dialog-content-question-feedback">
+                  <div className="quiz-edit-dialog-content-question-feedback-row row">
+                    <Alert
+                      className="quiz-edit-dialog-feedback-alert"
+                      severity="success"
+                    >
+                      {question.feedbackTrue}
+                    </Alert>
+                    <div>
+                      <IconButton
+                        aria-label="edit-correct-feedback"
+                        color="warning"
+                        onClick={() => handleEditFeedbackTextOpen(true, qindex)}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </div>
+                  </div>
+                  <div className="quiz-edit-dialog-content-question-feedback-row row">
+                    <Alert
+                      className="quiz-edit-dialog-feedback-alert"
+                      severity="error"
+                    >
+                      {question.feedbackFalse}
+                    </Alert>
+                    <div>
+                      <IconButton
+                        aria-label="edit-false-feedback"
+                        color="warning"
+                        onClick={() =>
+                          handleEditFeedbackTextOpen(false, qindex)
+                        }
+                      >
+                        <Edit />
+                      </IconButton>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -426,6 +495,27 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             : ""
         }
         handleDialogClose={(edited?: string) => handleEditAnswerText(edited)}
+      />
+      {/* Edit Question Feedback */}
+      <EditTextDialog
+        isDialogOpen={isEditQuesFeedbackTextDialogOpen}
+        dialogTitle="Edit Question Feedback"
+        dialogDescription={
+          "What feedback should the user get when they answer " +
+          (isEditCorrectFeedback ? "correctly" : "incorrectly") +
+          "?"
+        }
+        dialogFieldLabel="Feedback"
+        dialogFieldValue={
+          !!quiz && quiz?.questions.length > editQIndex && editQIndex !== -1
+            ? isEditCorrectFeedback
+              ? quiz.questions[editQIndex].feedbackTrue
+              : quiz.questions[editQIndex].feedbackFalse
+            : ""
+        }
+        handleDialogClose={(edited?: string) =>
+          handleEditFeedbackTextClose(edited)
+        }
       />
     </>
   );
