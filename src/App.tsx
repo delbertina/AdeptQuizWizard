@@ -23,7 +23,9 @@ function App() {
   const handleEditDialogClose = (newQuiz?: Quiz): void => {
     if (!!newQuiz) {
       const tempQuizzes = quizzes;
-      const filteredQuizzes = tempQuizzes.filter((quiz) => quiz.id !== newQuiz.id);
+      const filteredQuizzes = tempQuizzes.filter(
+        (quiz) => quiz.id !== newQuiz.id
+      );
       setQuizzes([newQuiz, ...filteredQuizzes]);
     }
     setIsEditDialogOpen(false);
@@ -41,7 +43,7 @@ function App() {
   };
 
   const handleAddNewQuiz = (): void => {
-    const maxIndex = Math.max(...quizzes.map(quiz => quiz.id));
+    const maxIndex = Math.max(...quizzes.map((quiz) => quiz.id));
     const newQuiz: Quiz = {
       id: maxIndex + 1,
       title: "New Quiz",
@@ -49,10 +51,10 @@ function App() {
       created: 0,
       modified: 0,
       questions: [],
-      videoURL: ""
+      videoURL: "",
     };
     handleEditDialogOpen(newQuiz);
-  }
+  };
 
   return (
     <div className="App">
@@ -73,32 +75,34 @@ function App() {
           </Toolbar>
         </AppBar>
         <div className="row quiz-display-row">
-          {quizzes.sort((a,b) => b.modified - a.modified).map((quiz, index) => (
-            <QuizCard
-              key={index}
-              title={quiz.title}
-              description={quiz.description}
-              score="94%"
-              onClick={() => handleViewDialogOpen(quiz)}
-              onEditClick={() => handleEditDialogOpen(quiz)}
-            ></QuizCard>
-          ))}
+          {quizzes
+            .sort((a, b) => b.modified - a.modified)
+            .map((quiz, index) => (
+              <QuizCard
+                key={index}
+                title={quiz.title}
+                description={quiz.description}
+                score="94%"
+                onClick={() => handleViewDialogOpen(quiz)}
+                onEditClick={() => handleEditDialogOpen(quiz)}
+              ></QuizCard>
+            ))}
         </div>
       </div>
       {!!currentQuiz && (
-<>
-        <QuizEditDialog
-        isDialogOpen={isEditDialogOpen}
-        quiz={currentQuiz}
-        handleDialogClose={(quiz?: Quiz) => handleEditDialogClose(quiz)}
-        />
-      <QuizViewDialog
-      isDialogOpen={isViewDialogOpen}
-      quiz={currentQuiz}
-      handleDialogClose={(score?: Score) => handleViewDialogClose(score)}
-      />
-      </>
-    )}
+        <>
+          <QuizEditDialog
+            isDialogOpen={isEditDialogOpen}
+            quiz={currentQuiz}
+            handleDialogClose={(quiz?: Quiz) => handleEditDialogClose(quiz)}
+          />
+          <QuizViewDialog
+            isDialogOpen={isViewDialogOpen}
+            quiz={currentQuiz}
+            handleDialogClose={(score?: Score) => handleViewDialogClose(score)}
+          />
+        </>
+      )}
     </div>
   );
 }

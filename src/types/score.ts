@@ -1,5 +1,5 @@
 export interface Score {
-    quizId: number,
-    result: string,
-    timestamp: number,
+  quizId: number;
+  result: string;
+  timestamp: number;
 }
