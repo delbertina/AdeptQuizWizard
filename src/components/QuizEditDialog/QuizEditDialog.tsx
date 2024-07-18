@@ -302,22 +302,22 @@ function QuizEditDialog(props: QuizEditDialogProps) {
               <div className="quiz-edit-dialog-content-question" key={qindex}>
                 <div className="quiz-edit-dialog-content-question-text row">
                   <div className="quiz-edit-dialog-content-question-start row">
-                  <div className="quiz-edit-dialog-content-question-text-start-actions row">
-                    <IconButton disabled={true}>
-                      <ArrowUpward />
-                    </IconButton>
-                    <IconButton disabled={true}>
-                      <ArrowDownward />
-                    </IconButton>
-                  </div>
-                  <Typography
-                    gutterBottom
-                    id="quiz-edit-dialog-content-question-text"
-                    variant="h6"
-                    component="div"
-                  >
-                    {question.text}
-                  </Typography>
+                    <div className="quiz-edit-dialog-content-question-text-start-actions row">
+                      <IconButton disabled={true}>
+                        <ArrowUpward />
+                      </IconButton>
+                      <IconButton disabled={true}>
+                        <ArrowDownward />
+                      </IconButton>
+                    </div>
+                    <Typography
+                      gutterBottom
+                      id="quiz-edit-dialog-content-question-text"
+                      variant="h6"
+                      component="div"
+                    >
+                      {question.text}
+                    </Typography>
                   </div>
                   <div className="quiz-edit-dialog-content-question-text-end-actions row">
                     <IconButton

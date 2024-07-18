@@ -31,16 +31,18 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   const handleQuizSubmit = (): void => {
-    const correctAns = props.quiz.questions.filter((question, index) => question.correctAnswerId === checkedAnswers[index]).length;
+    const correctAns = props.quiz.questions.filter(
+      (question, index) => question.correctAnswerId === checkedAnswers[index]
+    ).length;
     const totalAns = props.quiz.questions.length;
     const timestamp = Date.now().valueOf();
-    const scoreStr = Math.ceil((correctAns/totalAns)*100)  + "%";
+    const scoreStr = Math.ceil((correctAns / totalAns) * 100) + "%";
     props.handleDialogClose({
       quizId: props.quiz.id,
       result: scoreStr,
-      timestamp: timestamp
-    })
-  }
+      timestamp: timestamp,
+    });
+  };
 
   const handleAnswerSelect = (questionId: number, answerId: number): void => {
     let tempAnswers = selectedAnswers;
@@ -53,7 +55,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
     tempAnswers[questionId] = selectedAnswers[questionId];
     setCheckedAnswers([...tempAnswers]);
     setIsAllChecked(checkedAnswers.indexOf(-1) === -1);
-  }
+  };
 
   useEffect(() => {
     setSelectedAnswers(Array(props.quiz.questions.length).fill(-1));
@@ -119,10 +121,14 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               <div className="quiz-view-content-questions-wrapper">
                 <List>
                   {question.answers.map((answer, aIndex) => (
-                    <ListItem
-                      key={aIndex}
-                    >
-                      <ListItemButton onClick={() => handleAnswerSelect(qIndex, answer.id)} disabled={checkedAnswers.length > qIndex && checkedAnswers[qIndex] > -1} >
+                    <ListItem key={aIndex}>
+                      <ListItemButton
+                        onClick={() => handleAnswerSelect(qIndex, answer.id)}
+                        disabled={
+                          checkedAnswers.length > qIndex &&
+                          checkedAnswers[qIndex] > -1
+                        }
+                      >
                         <ListItemIcon>
                           {selectedAnswers.length > qIndex &&
                             selectedAnswers[qIndex] === answer.id && <Circle />}
@@ -142,23 +148,35 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                   variant="contained"
                   onClick={() => handleAnswerCheck(qIndex)}
                   disabled={
-                    ((selectedAnswers.length > qIndex &&
-                    selectedAnswers[qIndex] === -1)
-                    || (checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0))
+                    (selectedAnswers.length > qIndex &&
+                      selectedAnswers[qIndex] === -1) ||
+                    (checkedAnswers.length > qIndex &&
+                      checkedAnswers[qIndex] >= 0)
                   }
                 >
                   Check Answer
                 </Button>
-                {(checkedAnswers.length > qIndex && checkedAnswers[qIndex] >= 0) && (
-                  <>
-                  {checkedAnswers[qIndex] === question.correctAnswerId && (
-                  <Alert className="quiz-view-content-questions-check-alert" severity="success">{question.feedbackTrue}</Alert>
+                {checkedAnswers.length > qIndex &&
+                  checkedAnswers[qIndex] >= 0 && (
+                    <>
+                      {checkedAnswers[qIndex] === question.correctAnswerId && (
+                        <Alert
+                          className="quiz-view-content-questions-check-alert"
+                          severity="success"
+                        >
+                          {question.feedbackTrue}
+                        </Alert>
+                      )}
+                      {checkedAnswers[qIndex] !== question.correctAnswerId && (
+                        <Alert
+                          className="quiz-view-content-questions-check-alert"
+                          severity="error"
+                        >
+                          {question.feedbackFalse}
+                        </Alert>
+                      )}
+                    </>
                   )}
-                  {checkedAnswers[qIndex] !== question.correctAnswerId && (
-                  <Alert className="quiz-view-content-questions-check-alert" severity="error">{question.feedbackFalse}</Alert>
-                  )}
-                  </>
-                )}
               </div>
             </div>
           ))}
