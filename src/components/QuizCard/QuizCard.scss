@@ -1,12 +1,22 @@
 .quiz-card {
   margin: 24px;
   cursor: pointer;
-  min-width: 220px;
-  max-width: 220px;
+  min-width: 300px;
+  max-width: 300px;
   text-align: start;
   text-overflow: ellipsis;
 }
 
 .quiz-card-header {
   background-color: lightgrey;
+  > :nth-child(1) {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.quiz-card-header-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -27,7 +27,15 @@ function QuizCard(props: QuizCardProps) {
       <Card onClick={() => props.onClick()} className="quiz-card">
         <CardHeader
           className="quiz-card-header"
-          title={props.title}
+          title={
+            <Typography
+              className="quiz-card-header-title"
+              variant="h6"
+              component="h2"
+            >
+              {props.title}
+            </Typography>
+          }
           action={
             <IconButton
               aria-label="edit"
