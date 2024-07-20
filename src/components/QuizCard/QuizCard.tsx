@@ -55,7 +55,7 @@ function QuizCard(props: QuizCardProps) {
               WebkitBoxOrient: "vertical",
             }}
             gutterBottom
-            id="quiz-card-description"
+            className="quiz-card-description"
             variant="body1"
             component="div"
           >
@@ -63,7 +63,7 @@ function QuizCard(props: QuizCardProps) {
           </Typography>
           <Typography
             sx={{ fontWeight: "bold" }}
-            id="quiz-card-score"
+            className="quiz-card-score"
             variant="body1"
             component="div"
           >
