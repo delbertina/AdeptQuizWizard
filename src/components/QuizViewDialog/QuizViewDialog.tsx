@@ -144,18 +144,20 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                 </List>
               </div>
               <div className="quiz-view-content-questions-check row">
-                <Button
-                  variant="contained"
-                  onClick={() => handleAnswerCheck(qIndex)}
-                  disabled={
-                    (selectedAnswers.length > qIndex &&
-                      selectedAnswers[qIndex] === -1) ||
-                    (checkedAnswers.length > qIndex &&
-                      checkedAnswers[qIndex] >= 0)
-                  }
-                >
-                  Check Answer
-                </Button>
+                {checkedAnswers[qIndex] === -1 && (
+                  <Button
+                    variant="contained"
+                    onClick={() => handleAnswerCheck(qIndex)}
+                    disabled={
+                      (selectedAnswers.length > qIndex &&
+                        selectedAnswers[qIndex] === -1) ||
+                      (checkedAnswers.length > qIndex &&
+                        checkedAnswers[qIndex] >= 0)
+                    }
+                  >
+                    Check Answer
+                  </Button>
+                )}
                 {checkedAnswers.length > qIndex &&
                   checkedAnswers[qIndex] >= 0 && (
                     <>
