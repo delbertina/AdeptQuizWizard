@@ -2,12 +2,12 @@ import { useState } from "react";
 import "./App.scss";
 import { Add } from "@mui/icons-material";
 import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
-import QuizCard from "./components/QuizCard/QuizCard";
 import QuizEditDialog from "./components/QuizEditDialog/QuizEditDialog";
 import QuizViewDialog from "./components/QuizViewDialog/QuizViewDialog";
 import { Quiz } from "./types/quiz";
 import { Quizzes } from "./data/quizzes";
 import { Score } from "./types/score";
+import HomePage from "./pages/HomePage/HomePage";
 
 function App() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -74,20 +74,11 @@ function App() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <div className="row quiz-display-row">
-          {quizzes
-            .sort((a, b) => b.modified - a.modified)
-            .map((quiz, index) => (
-              <QuizCard
-                key={index}
-                title={quiz.title}
-                description={quiz.description}
-                score="94%"
-                onClick={() => handleViewDialogOpen(quiz)}
-                onEditClick={() => handleEditDialogOpen(quiz)}
-              ></QuizCard>
-            ))}
-        </div>
+        <HomePage
+          quizzes={quizzes}
+          onQuizClick={(quiz: Quiz) => handleViewDialogOpen(quiz)}
+          onQuizEditClick={(quiz: Quiz) => handleEditDialogOpen(quiz)}
+        />
       </div>
       {!!currentQuiz && (
         <>
