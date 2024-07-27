@@ -8,12 +8,14 @@ import { Quiz } from "./types/quiz";
 import { Quizzes } from "./data/quizzes";
 import { Score } from "./types/score";
 import HomePage from "./pages/HomePage/HomePage";
+import { Scores } from "./data/scores";
 
 function App() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState<boolean>(false);
   const [currentQuiz, setCurrentQuiz] = useState<Quiz | undefined>();
   const [quizzes, setQuizzes] = useState<Array<Quiz>>(Quizzes);
+  const [scores, setScores] = useState<Array<Score>>(Scores);
 
   const handleEditDialogOpen = (quiz: Quiz): void => {
     setIsEditDialogOpen(true);
@@ -40,6 +42,10 @@ function App() {
   const handleViewDialogClose = (score?: Score): void => {
     setIsViewDialogOpen(false);
     setCurrentQuiz(undefined);
+
+    if (!!score) {
+      setScores([...scores, score]);
+    }
   };
 
   const handleAddNewQuiz = (): void => {
@@ -76,6 +82,7 @@ function App() {
         </AppBar>
         <HomePage
           quizzes={quizzes}
+          scores={scores}
           onQuizClick={(quiz: Quiz) => handleViewDialogOpen(quiz)}
           onQuizEditClick={(quiz: Quiz) => handleEditDialogOpen(quiz)}
         />

@@ -63,7 +63,7 @@ export const Quizzes: Array<Quiz> = [
     ],
   },
   {
-    id: 1,
+    id: 2,
     title: "Regular Expressions 101",
     description: "An introductory quiz on the basics of regular expressions.",
     videoURL: "https://example.com/regex-intro",
@@ -206,7 +206,7 @@ export const Quizzes: Array<Quiz> = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     title: "AWS S3 Basics",
     description: "An introductory quiz on the fundamentals of Amazon S3.",
     videoURL: "https://example.com/aws-s3-intro",
@@ -367,7 +367,7 @@ export const Quizzes: Array<Quiz> = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     title: "Minecraft Trivia",
     description: "Test your knowledge of Minecraft with this trivia quiz.",
     videoURL: "https://example.com/minecraft-trivia",

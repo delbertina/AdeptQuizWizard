@@ -36,10 +36,10 @@ function QuizViewDialog(props: QuizViewDialogProps) {
     ).length;
     const totalAns = props.quiz.questions.length;
     const timestamp = Date.now().valueOf();
-    const scoreStr = Math.ceil((correctAns / totalAns) * 100) + "%";
+    const scoreNum = ((correctAns / totalAns) * 100);
     props.handleDialogClose({
       quizId: props.quiz.id,
-      result: scoreStr,
+      result: scoreNum,
       timestamp: timestamp,
     });
   };

@@ -11,7 +11,7 @@ import {
 export interface QuizCardProps {
   title: string;
   description: string;
-  score?: string;
+  score?: number;
   onClick: () => void;
   onEditClick: () => void;
 }
@@ -67,7 +67,7 @@ function QuizCard(props: QuizCardProps) {
             variant="body1"
             component="div"
           >
-            {"Last Score: " + (props.score ? props.score : "< None >")}
+            {"Avg Score: " + (props.score ? Math.ceil(props.score) + "%" : "<None>")}
           </Typography>
         </CardContent>
       </Card>
