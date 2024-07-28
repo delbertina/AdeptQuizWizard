@@ -7,11 +7,13 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { Score } from "../../types/score";
+import QuizCardFooter from "../QuizCardFooter/QuizCardFooter";
+import { Quiz } from "../../types/quiz";
 
 export interface QuizCardProps {
-  title: string;
-  description: string;
-  score?: number;
+  quiz: Quiz;
+  scores: Score[];
   onClick: () => void;
   onEditClick: () => void;
 }
@@ -33,7 +35,7 @@ function QuizCard(props: QuizCardProps) {
               variant="h6"
               component="h2"
             >
-              {props.title}
+              {props.quiz.title}
             </Typography>
           }
           action={
@@ -59,16 +61,9 @@ function QuizCard(props: QuizCardProps) {
             variant="body1"
             component="div"
           >
-            {props.description}
+            {props.quiz.description}
           </Typography>
-          <Typography
-            sx={{ fontWeight: "bold" }}
-            className="quiz-card-score"
-            variant="body1"
-            component="div"
-          >
-            {"Avg Score: " + (props.score ? Math.ceil(props.score) + "%" : "<None>")}
-          </Typography>
+          <QuizCardFooter scores={props.scores}/>
         </CardContent>
       </Card>
     </>

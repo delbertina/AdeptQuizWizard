@@ -10,9 +10,6 @@ export interface HomePageProps {
   onQuizEditClick: (quiz: Quiz) => void;
 }
 
-const average = (array: number[]) =>
-  array.reduce((a, b) => a + b, 0) / array.length;
-
 function HomePage(props: HomePageProps) {
   return (
     <div className="row quiz-display-row">
@@ -21,14 +18,8 @@ function HomePage(props: HomePageProps) {
         .map((quiz, index) => (
           <QuizCard
             key={index}
-            title={quiz.title}
-            description={quiz.description}
-            score={average(
-              props.scores
-                .filter((score) => score.quizId === quiz.id)
-                // Maybe add filter to only scores after the last edit of the quiz
-                .map((score) => score.result) ?? []
-            )}
+            quiz={quiz}
+            scores={props.scores.filter((score) => score.quizId === quiz.id)}
             onClick={() => props.onQuizClick(quiz)}
             onEditClick={() => props.onQuizEditClick(quiz)}
           ></QuizCard>
