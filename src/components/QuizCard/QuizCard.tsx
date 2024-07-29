@@ -16,6 +16,7 @@ export interface QuizCardProps {
   scores: Score[];
   onClick: () => void;
   onEditClick: () => void;
+  onScoreClick: () => void;
 }
 
 function QuizCard(props: QuizCardProps) {
@@ -63,7 +64,7 @@ function QuizCard(props: QuizCardProps) {
           >
             {props.quiz.description}
           </Typography>
-          <QuizCardFooter scores={props.scores}/>
+          <QuizCardFooter scores={props.scores} onClick={props.onScoreClick}/>
         </CardContent>
       </Card>
     </>

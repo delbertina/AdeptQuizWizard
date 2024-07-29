@@ -85,6 +85,7 @@ function App() {
           scores={scores}
           onQuizClick={(quiz: Quiz) => handleViewDialogOpen(quiz)}
           onQuizEditClick={(quiz: Quiz) => handleEditDialogOpen(quiz)}
+          onQuizScoreClick={(quiz: Quiz) => console.log("score click", quiz)}
         />
       </div>
       {!!currentQuiz && (
