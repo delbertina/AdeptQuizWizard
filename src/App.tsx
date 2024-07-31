@@ -13,6 +13,7 @@ import { Scores } from "./data/scores";
 function App() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState<boolean>(false);
+  const [isScoreDialogOpen, setIsScoreDialogOpen] = useState<boolean>(false);
   const [currentQuiz, setCurrentQuiz] = useState<Quiz | undefined>();
   const [quizzes, setQuizzes] = useState<Array<Quiz>>(Quizzes);
   const [scores, setScores] = useState<Array<Score>>(Scores);
@@ -46,6 +47,16 @@ function App() {
     if (!!score) {
       setScores([...scores, score]);
     }
+  };
+
+  const handleScoreDialogOpen = (quiz: Quiz): void => {
+    setIsScoreDialogOpen(true);
+    setCurrentQuiz(quiz);
+  };
+
+  const handleScoreDialogClose = (): void => {
+    setIsScoreDialogOpen(false);
+    setCurrentQuiz(undefined);
   };
 
   const handleAddNewQuiz = (): void => {
@@ -85,21 +96,31 @@ function App() {
           scores={scores}
           onQuizClick={(quiz: Quiz) => handleViewDialogOpen(quiz)}
           onQuizEditClick={(quiz: Quiz) => handleEditDialogOpen(quiz)}
-          onQuizScoreClick={(quiz: Quiz) => console.log("score click", quiz)}
+          onQuizScoreClick={(quiz: Quiz) => handleScoreDialogOpen(quiz)}
         />
       </div>
       {!!currentQuiz && (
         <>
-          <QuizEditDialog
-            isDialogOpen={isEditDialogOpen}
-            quiz={currentQuiz}
-            handleDialogClose={(quiz?: Quiz) => handleEditDialogClose(quiz)}
-          />
-          <QuizViewDialog
-            isDialogOpen={isViewDialogOpen}
-            quiz={currentQuiz}
-            handleDialogClose={(score?: Score) => handleViewDialogClose(score)}
-          />
+          {!!isEditDialogOpen && (
+            <QuizEditDialog
+              isDialogOpen={isEditDialogOpen}
+              quiz={currentQuiz}
+              handleDialogClose={(quiz?: Quiz) => handleEditDialogClose(quiz)}
+            />
+          )}
+          {!!isViewDialogOpen && (
+            <QuizViewDialog
+              isDialogOpen={isViewDialogOpen}
+              quiz={currentQuiz}
+              handleDialogClose={(score?: Score) =>
+                handleViewDialogClose(score)
+              }
+            />
+          )}
+          {!!isScoreDialogOpen && (
+           <>
+           </> 
+          )}
         </>
       )}
     </div>
