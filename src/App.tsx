@@ -9,6 +9,7 @@ import { Quizzes } from "./data/quizzes";
 import { Score } from "./types/score";
 import HomePage from "./pages/HomePage/HomePage";
 import { Scores } from "./data/scores";
+import QuizScoreDialog from "./components/QuizScoreDialog/QuizScoreDialog";
 
 function App() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -118,8 +119,16 @@ function App() {
             />
           )}
           {!!isScoreDialogOpen && (
-           <>
-           </> 
+            <>
+              <QuizScoreDialog
+                isDialogOpen={isScoreDialogOpen}
+                quiz={currentQuiz}
+                scores={scores.filter(
+                  (score) => score.quizId === currentQuiz.id
+                )}
+                handleDialogClose={() => handleScoreDialogClose()}
+              />
+            </>
           )}
         </>
       )}

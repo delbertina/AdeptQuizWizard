@@ -1,0 +1,28 @@
+#quiz-score-dialog-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  #quiz-score-dialog-title-column {
+    display: flex;
+    flex-direction: column;
+    margin-right: 24px;
+  }
+  
+  #quiz-score-dialog-content {
+    background-color: #dddddd;
+  }
+
+  .quiz-score-dialog-content-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 3px dotted gray;
+    padding: 8px;
+    margin-bottom: 16px;
+  }
+
+  .quiz-score-dialog-content-row-old {
+    background-color: #bbbbbb;
+  }
