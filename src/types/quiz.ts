@@ -21,3 +21,13 @@ export interface QuizAnswer {
   id: number;
   text: string;
 }
+
+export const NewQuiz = {
+  id: 0,
+  title: "New Quiz",
+  description: "New Quiz Description",
+  created: 0,
+  modified: 0,
+  questions: [],
+  videoURL: "",
+}

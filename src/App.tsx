@@ -4,12 +4,14 @@ import { Add } from "@mui/icons-material";
 import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 import QuizEditDialog from "./components/QuizEditDialog/QuizEditDialog";
 import QuizViewDialog from "./components/QuizViewDialog/QuizViewDialog";
-import { Quiz } from "./types/quiz";
+import { NewQuiz, Quiz } from "./types/quiz";
 import { Quizzes } from "./data/quizzes";
 import { Score } from "./types/score";
 import HomePage from "./pages/HomePage/HomePage";
 import { Scores } from "./data/scores";
 import QuizScoreDialog from "./components/QuizScoreDialog/QuizScoreDialog";
+import { useSelector, useDispatch } from "react-redux";
+import {add, InitialQuizStateType} from './store/quizSlice';
 
 function App() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
@@ -18,6 +20,13 @@ function App() {
   const [currentQuiz, setCurrentQuiz] = useState<Quiz | undefined>();
   const [quizzes, setQuizzes] = useState<Array<Quiz>>(Quizzes);
   const [scores, setScores] = useState<Array<Score>>(Scores);
+
+  const storeQuizzes = useSelector((state: {quiz: InitialQuizStateType}) => state.quiz.quizzes);
+  const dispatch = useDispatch();
+
+  const temp = (): void => {
+    dispatch(add(NewQuiz));
+  }
 
   const handleEditDialogOpen = (quiz: Quiz): void => {
     setIsEditDialogOpen(true);
