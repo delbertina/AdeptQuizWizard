@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { Score } from "../../types/score";
-import average from "../../shared/helper";
+import { average, formatScore } from "../../shared/helper";
 import './QuizCardFooter.scss';
 
 export interface QuizCardFooterProps {
@@ -23,11 +23,11 @@ function QuizCardFooter(props: QuizCardFooterProps) {
             variant="body1"
             component="div"
           >
-            {"Avg Score: " + (props.scores.length ? Math.ceil(average(
+            {"Avg Score: " + (props.scores.length ? formatScore(Math.round(average(
               props.scores
                 // Maybe add filter to only scores after the last edit of the quiz
                 .map((score) => score.result) ?? []
-            )) + "%" : "<None>")}
+            ))) + "%" : "<None>")}
           </Typography>
         </div>
     )

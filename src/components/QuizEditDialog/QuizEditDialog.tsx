@@ -22,10 +22,11 @@ import {
 import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
 import { Quiz } from "../../types/quiz";
+import { useSelector } from "react-redux";
+import { selectCurrentQuiz } from "../../store/quizSlice";
 
 export interface QuizEditDialogProps {
   isDialogOpen: boolean;
-  quiz: Quiz;
   handleDialogClose: (quiz?: Quiz) => void;
 }
 
@@ -48,6 +49,8 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   const [editQIndex, setEditQIndex] = useState<number>(-1);
   const [editAIndex, setEditAIndex] = useState<number>(-1);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
+
+  const initialQuiz = useSelector(selectCurrentQuiz);
 
   const handleEditQuizTitleOpen = (): void => {
     setIsEditQuizTitleDialogOpen(true);
@@ -211,8 +214,8 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   }, [quiz]);
 
   useEffect(() => {
-    setQuiz(props.quiz);
-  }, [props.quiz]);
+    setQuiz(initialQuiz);
+  }, [initialQuiz]);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Score } from "../types/score";
+import { Scores } from "../data/scores";
 
 export interface InitialScoreStateType {
   scores: Score[];
@@ -7,15 +8,18 @@ export interface InitialScoreStateType {
 }
 
 const initialState: InitialScoreStateType = {
-  scores: [],
+  scores: Scores,
   nextIndex: 1,
 };
 
 export const scoreSlice = createSlice({
   name: "score",
-  initialState,
+  initialState: initialState,
+  selectors: {
+    selectScores: (state): Score[] => state.scores,
+  },
   reducers: {
-    add: (state, action: PayloadAction<Score>) => {
+    addScore: (state, action: PayloadAction<Score>) => {
       if (action.payload.id === 0) {
         // if the id is 0, it's a new score
         action.payload.id = state.nextIndex;
@@ -23,13 +27,13 @@ export const scoreSlice = createSlice({
       }
       state.scores = [...state.scores, action.payload];
     },
-    update: (state, action: PayloadAction<Score>) => {
+    updateScore: (state, action: PayloadAction<Score>) => {
       state.scores = [
         ...state.scores.filter((score) => score.id !== action.payload.id),
         action.payload,
       ];
     },
-    delete: (state, action: PayloadAction<number>) => {
+    removeScore: (state, action: PayloadAction<number>) => {
       state.scores = [
         ...state.scores.filter((score) => score.id !== action.payload),
       ];
@@ -37,5 +41,6 @@ export const scoreSlice = createSlice({
   },
 });
 
-export const { add } = scoreSlice.actions;
+export const { selectScores } = scoreSlice.selectors;
+export const { addScore, updateScore, removeScore } = scoreSlice.actions;
 export default scoreSlice.reducer;

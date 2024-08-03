@@ -15,13 +15,13 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { Quiz } from "../../types/quiz";
 import { Score } from "../../types/score";
 import { useEffect, useState } from "react";
+import { selectCurrentQuiz } from "../../store/quizSlice";
+import { useSelector } from "react-redux";
 
 export interface QuizViewDialogProps {
   isDialogOpen: boolean;
-  quiz: Quiz;
   handleDialogClose: (score?: Score) => void;
 }
 
@@ -30,15 +30,18 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   const [checkedAnswers, setCheckedAnswers] = useState<Array<number>>([]);
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
+  const quiz = useSelector(selectCurrentQuiz);
+
   const handleQuizSubmit = (): void => {
-    const correctAns = props.quiz.questions.filter(
+    const correctAns = quiz.questions.filter(
       (question, index) => question.correctAnswerId === checkedAnswers[index]
     ).length;
-    const totalAns = props.quiz.questions.length;
+    const totalAns = quiz.questions.length;
     const timestamp = Date.now().valueOf();
     const scoreNum = ((correctAns / totalAns) * 100);
     props.handleDialogClose({
-      quizId: props.quiz.id,
+      id: 0,
+      quizId: quiz.id,
       result: scoreNum,
       timestamp: timestamp,
     });
@@ -58,9 +61,9 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   };
 
   useEffect(() => {
-    setSelectedAnswers(Array(props.quiz.questions.length).fill(-1));
-    setCheckedAnswers(Array(props.quiz.questions.length).fill(-1));
-  }, [props.quiz]);
+    setSelectedAnswers(Array(quiz.questions.length).fill(-1));
+    setCheckedAnswers(Array(quiz.questions.length).fill(-1));
+  }, [quiz]);
 
   return (
     <>
@@ -82,7 +85,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               variant="h5"
               component="div"
             >
-              {props.quiz.title}
+              {quiz.title}
             </Typography>
             <Typography
               gutterBottom
@@ -90,7 +93,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               variant="body1"
               component="div"
             >
-              {props.quiz.description}
+              {quiz.description}
             </Typography>
           </div>
           <div>
@@ -106,7 +109,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
         </DialogTitle>
         <DialogContent dividers={true} id="quiz-view-dialog-content">
           {/* display current question */}
-          {props.quiz.questions.map((question, qIndex) => (
+          {quiz.questions.map((question, qIndex) => (
             <div key={qIndex}>
               <div className="quiz-view-content-title-wrapper">
                 <Typography

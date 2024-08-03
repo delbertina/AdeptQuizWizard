@@ -1,86 +1,67 @@
-import { useState } from "react";
 import "./App.scss";
 import { Add } from "@mui/icons-material";
 import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 import QuizEditDialog from "./components/QuizEditDialog/QuizEditDialog";
 import QuizViewDialog from "./components/QuizViewDialog/QuizViewDialog";
 import { NewQuiz, Quiz } from "./types/quiz";
-import { Quizzes } from "./data/quizzes";
 import { Score } from "./types/score";
 import HomePage from "./pages/HomePage/HomePage";
-import { Scores } from "./data/scores";
 import QuizScoreDialog from "./components/QuizScoreDialog/QuizScoreDialog";
 import { useSelector, useDispatch } from "react-redux";
-import {add, InitialQuizStateType} from './store/quizSlice';
+import { selectQuizzes, setCurrentQuiz, updateQuiz} from './store/quizSlice';
+import { addScore,  selectScores } from "./store/scoreSlice";
+import { selectDialog, setDialog } from "./store/dialogSlice";
+import { DIALOG_NAME } from "./types/dialog";
 
 function App() {
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState<boolean>(false);
-  const [isScoreDialogOpen, setIsScoreDialogOpen] = useState<boolean>(false);
-  const [currentQuiz, setCurrentQuiz] = useState<Quiz | undefined>();
-  const [quizzes, setQuizzes] = useState<Array<Quiz>>(Quizzes);
-  const [scores, setScores] = useState<Array<Score>>(Scores);
-
-  const storeQuizzes = useSelector((state: {quiz: InitialQuizStateType}) => state.quiz.quizzes);
+  const quizzes = useSelector(selectQuizzes);
+  const scores = useSelector(selectScores);
+  const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
-  const temp = (): void => {
-    dispatch(add(NewQuiz));
+  const closeDialog = (): void => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
   }
 
   const handleEditDialogOpen = (quiz: Quiz): void => {
-    setIsEditDialogOpen(true);
-    setCurrentQuiz(quiz);
+    console.log("test")
+    dispatch(setDialog(DIALOG_NAME.QUIZ_EDIT));
+    dispatch(setCurrentQuiz(quiz));
   };
 
   const handleEditDialogClose = (newQuiz?: Quiz): void => {
     if (!!newQuiz) {
-      const tempQuizzes = quizzes;
-      const filteredQuizzes = tempQuizzes.filter(
-        (quiz) => quiz.id !== newQuiz.id
-      );
-      setQuizzes([newQuiz, ...filteredQuizzes]);
+      dispatch(updateQuiz(newQuiz));
     }
-    setIsEditDialogOpen(false);
-    setCurrentQuiz(undefined);
+    closeDialog();
   };
 
   const handleViewDialogOpen = (quiz: Quiz): void => {
-    setIsViewDialogOpen(true);
-    setCurrentQuiz(quiz);
+    console.log("test")
+    dispatch(setDialog(DIALOG_NAME.QUIZ_VIEW));
+    dispatch(setCurrentQuiz(quiz));
   };
 
   const handleViewDialogClose = (score?: Score): void => {
-    setIsViewDialogOpen(false);
-    setCurrentQuiz(undefined);
-
     if (!!score) {
-      setScores([...scores, score]);
+      dispatch(addScore(score));
     }
+    closeDialog();
   };
 
   const handleScoreDialogOpen = (quiz: Quiz): void => {
-    setIsScoreDialogOpen(true);
-    setCurrentQuiz(quiz);
+    console.log("test")
+    dispatch(setDialog(DIALOG_NAME.SCORE_VIEW));
+    dispatch(setCurrentQuiz(quiz));
   };
 
   const handleScoreDialogClose = (): void => {
-    setIsScoreDialogOpen(false);
-    setCurrentQuiz(undefined);
+    closeDialog();
   };
 
   const handleAddNewQuiz = (): void => {
-    const maxIndex = Math.max(...quizzes.map((quiz) => quiz.id));
-    const newQuiz: Quiz = {
-      id: maxIndex + 1,
-      title: "New Quiz",
-      description: "New Quiz Description",
-      created: 0,
-      modified: 0,
-      questions: [],
-      videoURL: "",
-    };
-    handleEditDialogOpen(newQuiz);
+    handleEditDialogOpen(NewQuiz);
   };
 
   return (
@@ -101,6 +82,7 @@ function App() {
             </IconButton>
           </Toolbar>
         </AppBar>
+        {/* {JSON.stringify(quizzes)} */}
         <HomePage
           quizzes={quizzes}
           scores={scores}
@@ -109,32 +91,27 @@ function App() {
           onQuizScoreClick={(quiz: Quiz) => handleScoreDialogOpen(quiz)}
         />
       </div>
-      {!!currentQuiz && (
+      {dialog ?? "null"}
+      {!!dialog && (
         <>
-          {!!isEditDialogOpen && (
+          {dialog === DIALOG_NAME.QUIZ_EDIT && (
             <QuizEditDialog
-              isDialogOpen={isEditDialogOpen}
-              quiz={currentQuiz}
+              isDialogOpen={dialog === DIALOG_NAME.QUIZ_EDIT}
               handleDialogClose={(quiz?: Quiz) => handleEditDialogClose(quiz)}
             />
           )}
-          {!!isViewDialogOpen && (
+          {dialog === DIALOG_NAME.QUIZ_VIEW && (
             <QuizViewDialog
-              isDialogOpen={isViewDialogOpen}
-              quiz={currentQuiz}
+              isDialogOpen={dialog === DIALOG_NAME.QUIZ_VIEW}
               handleDialogClose={(score?: Score) =>
                 handleViewDialogClose(score)
               }
             />
           )}
-          {!!isScoreDialogOpen && (
+          {dialog === DIALOG_NAME.SCORE_VIEW && (
             <>
               <QuizScoreDialog
-                isDialogOpen={isScoreDialogOpen}
-                quiz={currentQuiz}
-                scores={scores.filter(
-                  (score) => score.quizId === currentQuiz.id
-                )}
+                isDialogOpen={dialog === DIALOG_NAME.SCORE_VIEW}
                 handleDialogClose={() => handleScoreDialogClose()}
               />
             </>

@@ -1,21 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Quiz } from "../types/quiz";
+import { NewQuiz, Quiz } from "../types/quiz";
+import { Quizzes } from "../data/quizzes";
 
 export interface InitialQuizStateType {
   quizzes: Quiz[];
   nextIndex: number;
+  current: Quiz;
 }
 
 const initialState: InitialQuizStateType = {
-  quizzes: [],
-  nextIndex: 1,
+  quizzes: Quizzes,
+  nextIndex: Math.max(...Quizzes.map((quiz) => quiz.id)) + 1,
+  current: NewQuiz,
 };
 
 export const quizSlice = createSlice({
   name: "quiz",
-  initialState,
+  initialState: initialState,
+  selectors: {
+    selectQuizzes: (state): Quiz[] => state.quizzes,
+    selectCurrentQuiz: (state): Quiz => state.current,
+  },
   reducers: {
-    add: (state, action: PayloadAction<Quiz>) => {
+    addQuiz: (state, action: PayloadAction<Quiz>) => {
       if (action.payload.id === 0) {
         // if the id is 0, it's a new quiz
         action.payload.id = state.nextIndex;
@@ -23,19 +30,24 @@ export const quizSlice = createSlice({
       }
       state.quizzes = [...state.quizzes, action.payload];
     },
-    update: (state, action: PayloadAction<Quiz>) => {
+    updateQuiz: (state, action: PayloadAction<Quiz>) => {
       state.quizzes = [
         ...state.quizzes.filter((quiz) => quiz.id !== action.payload.id),
         action.payload,
       ];
     },
-    delete: (state, action: PayloadAction<number>) => {
+    removeQuiz: (state, action: PayloadAction<number>) => {
       state.quizzes = [
         ...state.quizzes.filter((quiz) => quiz.id !== action.payload),
       ];
     },
+    setCurrentQuiz: (state, action: PayloadAction<Quiz>) => {
+      state.current = action.payload;
+    },
   },
 });
 
-export const { add } = quizSlice.actions;
+export const { selectCurrentQuiz, selectQuizzes } = quizSlice.selectors;
+export const { addQuiz, updateQuiz, removeQuiz, setCurrentQuiz } =
+  quizSlice.actions;
 export default quizSlice.reducer;
