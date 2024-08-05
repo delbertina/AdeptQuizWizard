@@ -28,12 +28,12 @@ export const quizSlice = createSlice({
         action.payload.id = state.nextIndex;
         state.nextIndex++;
       }
-      state.quizzes = [...state.quizzes, action.payload];
+      state.quizzes = [action.payload, ...state.quizzes];
     },
     updateQuiz: (state, action: PayloadAction<Quiz>) => {
       state.quizzes = [
-        ...state.quizzes.filter((quiz) => quiz.id !== action.payload.id),
         action.payload,
+        ...state.quizzes.filter((quiz) => quiz.id !== action.payload.id),
       ];
     },
     removeQuiz: (state, action: PayloadAction<number>) => {

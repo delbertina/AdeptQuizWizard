@@ -15,14 +15,14 @@ import {
   IconButton,
   Alert,
 } from "@mui/material";
-import { Score } from "../../types/score";
 import { useEffect, useState } from "react";
 import { selectCurrentQuiz } from "../../store/quizSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addScore } from "../../store/scoreSlice";
 
 export interface QuizViewDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: (score?: Score) => void;
+  handleDialogClose: () => void;
 }
 
 function QuizViewDialog(props: QuizViewDialogProps) {
@@ -31,6 +31,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   const quiz = useSelector(selectCurrentQuiz);
+  const dispatch = useDispatch();
 
   const handleQuizSubmit = (): void => {
     const correctAns = quiz.questions.filter(
@@ -38,13 +39,15 @@ function QuizViewDialog(props: QuizViewDialogProps) {
     ).length;
     const totalAns = quiz.questions.length;
     const timestamp = Date.now().valueOf();
-    const scoreNum = ((correctAns / totalAns) * 100);
-    props.handleDialogClose({
+    const scoreNum = (correctAns / totalAns) * 100;
+    const newScore = {
       id: 0,
       quizId: quiz.id,
       result: scoreNum,
       timestamp: timestamp,
-    });
+    };
+    dispatch(addScore(newScore));
+    props.handleDialogClose();
   };
 
   const handleAnswerSelect = (questionId: number, answerId: number): void => {

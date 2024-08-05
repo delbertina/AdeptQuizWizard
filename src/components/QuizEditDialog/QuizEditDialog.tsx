@@ -22,12 +22,12 @@ import {
 import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
 import { Quiz } from "../../types/quiz";
-import { useSelector } from "react-redux";
-import { selectCurrentQuiz } from "../../store/quizSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addQuiz, selectCurrentQuiz, updateQuiz } from "../../store/quizSlice";
 
 export interface QuizEditDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: (quiz?: Quiz) => void;
+  handleDialogClose: () => void;
 }
 
 function QuizEditDialog(props: QuizEditDialogProps) {
@@ -51,6 +51,20 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
 
   const initialQuiz = useSelector(selectCurrentQuiz);
+  const dispatch = useDispatch();
+
+  const handleSubmit = (): void => {
+    if (!quiz) {
+      return;
+    }
+
+    if (!!quiz.id) {
+      dispatch(updateQuiz(quiz));
+    } else {
+      dispatch(addQuiz(quiz));
+    }
+    props.handleDialogClose();
+  };
 
   const handleEditQuizTitleOpen = (): void => {
     setIsEditQuizTitleDialogOpen(true);
@@ -214,7 +228,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   }, [quiz]);
 
   useEffect(() => {
-    setQuiz(initialQuiz);
+    setQuiz({...initialQuiz});
   }, [initialQuiz]);
 
   return (
@@ -442,7 +456,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
           <Button onClick={() => props.handleDialogClose()}>Cancel</Button>
           <Button
             variant="contained"
-            onClick={() => props.handleDialogClose(quiz)}
+            onClick={() => handleSubmit()}
             disabled={isSubmitDisabled}
           >
             Submit
