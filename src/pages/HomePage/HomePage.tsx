@@ -14,7 +14,7 @@ export interface HomePageProps {
 function HomePage(props: HomePageProps) {
   return (
     <div className="row quiz-display-row">
-      {props.quizzes
+      {props.quizzes.slice()
         .sort((a, b) => b.modified - a.modified)
         .map((quiz, index) => (
           <QuizCard

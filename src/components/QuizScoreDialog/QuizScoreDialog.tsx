@@ -7,18 +7,20 @@ import {
   DialogContent,
   IconButton,
 } from "@mui/material";
-import { Quiz } from "../../types/quiz";
-import { Score } from "../../types/score";
-import average from "../../shared/helper";
+import { average, formatScore } from "../../shared/helper";
+import { useSelector } from "react-redux";
+import { selectCurrentQuiz } from "../../store/quizSlice";
+import { selectScores } from "../../store/scoreSlice";
 
 export interface QuizScoreDialogProps {
   isDialogOpen: boolean;
-  quiz: Quiz;
-  scores: Score[];
   handleDialogClose: () => void;
 }
 
 function QuizScoreDialog(props: QuizScoreDialogProps) {
+  const quiz = useSelector(selectCurrentQuiz);
+  const scores = useSelector(selectScores);
+
   return (
     <>
       <Dialog
@@ -39,7 +41,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
               variant="h5"
               component="div"
             >
-              {props.quiz.title + " Scores"}
+              {quiz.title + " Scores"}
             </Typography>
             <Typography
               gutterBottom
@@ -48,10 +50,10 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
               component="div"
             >
               {"Avg Score: " +
-                (props.scores.length
-                  ? Math.ceil(
+                (scores.length
+                  ? Math.round(
                       average(
-                        props.scores
+                        scores
                           // Maybe add filter to only scores after the last edit of the quiz
                           .map((score) => score.result) ?? []
                       )
@@ -72,14 +74,15 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
         </DialogTitle>
         <DialogContent dividers={true} id="quiz-score-dialog-content">
           {/* display quiz scores */}
-          {props.scores
+          {scores
+            .filter((score) => score.quizId === quiz.id)
             .sort((s1, s2) => (s1.timestamp > s2.timestamp ? 1 : -1))
             .map((score, i) => (
               <div
                 key={i}
                 className={
                   "quiz-score-dialog-content-row " +
-                  (score.timestamp < props.quiz.modified
+                  (score.timestamp < quiz.modified
                     ? "quiz-score-dialog-content-row-old"
                     : "")
                 }
@@ -88,7 +91,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
                   {new Date(score.timestamp).toUTCString()}
                 </div>
                 <div className="quiz-score-dialog-content-row-result">
-                  {score.result + "%"}
+                  {formatScore(score.result) + "%"}
                 </div>
               </div>
             ))}
