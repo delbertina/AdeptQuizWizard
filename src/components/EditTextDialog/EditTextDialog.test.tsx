@@ -35,8 +35,8 @@ test('renders text field', () => {
         dialogFieldLabel=""
         dialogFieldValue=""
         handleDialogClose={() => {}}/></Provider>);
-    const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
-    expect(descriptionDisplay).not.toBeInTheDocument();
+    const descriptionDisplay = screen.queryByTestId("edit-text-dialog-description");
+    expect(descriptionDisplay).toBeNull();
   });
 
   test('renders description', () => {
@@ -48,5 +48,5 @@ test('renders text field', () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}/></Provider>);
     const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
-    expect(descriptionDisplay).not.toBeInTheDocument();
+    expect(descriptionDisplay).toBeInTheDocument();
   });
