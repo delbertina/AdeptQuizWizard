@@ -27,7 +27,7 @@ test('renders text field', () => {
     expect(titleDisplay).toBeInTheDocument();
   });
 
-  test('renders title not in existance', () => {
+  test('renders description', () => {
     render(<Provider store={store}><EditTextDialog 
         isDialogOpen={true}
         dialogTitle=""
@@ -35,6 +35,6 @@ test('renders text field', () => {
         dialogFieldLabel=""
         dialogFieldValue=""
         handleDialogClose={() => {}}/></Provider>);
-    const titleDisplay = screen.getByTestId("edit-text-dialog-header-that-does-not-exist");
-    expect(titleDisplay).toBeInTheDocument();
+    const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
+    expect(descriptionDisplay).toBeInTheDocument();
   });
