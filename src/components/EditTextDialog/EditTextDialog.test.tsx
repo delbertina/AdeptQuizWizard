@@ -14,3 +14,15 @@ test('renders text field', () => {
     const textField = screen.getByTestId("editedText");
     expect(textField).toBeInTheDocument();
   });
+
+  test('renders title', () => {
+    render(<Provider store={store}><EditTextDialog 
+        isDialogOpen={true}
+        dialogTitle=""
+        dialogDescription=""
+        dialogFieldLabel=""
+        dialogFieldValue=""
+        handleDialogClose={() => {}}/></Provider>);
+    const titleDisplay = screen.getByTestId("edit-text-dialog-header");
+    expect(titleDisplay).toBeInTheDocument();
+  });
