@@ -27,7 +27,7 @@ test('renders text field', () => {
     expect(titleDisplay).toBeInTheDocument();
   });
 
-  test('renders description', () => {
+  test('renders no description when blank', () => {
     render(<Provider store={store}><EditTextDialog 
         isDialogOpen={true}
         dialogTitle=""
@@ -36,5 +36,17 @@ test('renders text field', () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}/></Provider>);
     const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
-    expect(descriptionDisplay).toBeInTheDocument();
+    expect(descriptionDisplay).not.toBeInTheDocument();
+  });
+
+  test('renders description', () => {
+    render(<Provider store={store}><EditTextDialog 
+        isDialogOpen={true}
+        dialogTitle=""
+        dialogDescription="Test Description"
+        dialogFieldLabel=""
+        dialogFieldValue=""
+        handleDialogClose={() => {}}/></Provider>);
+    const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
+    expect(descriptionDisplay).not.toBeInTheDocument();
   });
