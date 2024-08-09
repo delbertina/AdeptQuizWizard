@@ -36,12 +36,18 @@ function EditTextDialog(props: EditTextDialogProps) {
       aria-labelledby="edit-text-dialog-title"
       aria-describedby="edit-text-dialog-description"
     >
-      <DialogTitle id="edit-text-dialog-header">
+      <DialogTitle
+        id="edit-text-dialog-header"
+        data-testid="edit-text-dialog-header"
+      >
         {props.dialogTitle}
       </DialogTitle>
       <DialogContent>
         {!!props.dialogDescription && (
-          <DialogContentText id="edit-text-dialog-description">
+          <DialogContentText
+            id="edit-text-dialog-description"
+            data-testid="edit-text-dialog-description"
+          >
             {props.dialogDescription}
           </DialogContentText>
         )}
@@ -50,6 +56,7 @@ function EditTextDialog(props: EditTextDialogProps) {
           required
           margin="dense"
           id="editedText"
+          data-testid="editedText"
           name="editedText"
           label={props.dialogFieldLabel}
           type="text"
@@ -59,8 +66,8 @@ function EditTextDialog(props: EditTextDialogProps) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => props.handleDialogClose()}>Cancel</Button>
-        <Button variant="contained" type="submit">
+        <Button onClick={() => props.handleDialogClose()} data-testid="cancel-button">Cancel</Button>
+        <Button variant="contained" type="submit" data-testid="submit-button">
           Submit
         </Button>
       </DialogActions>
