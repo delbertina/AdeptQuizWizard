@@ -26,3 +26,15 @@ test('renders text field', () => {
     const titleDisplay = screen.getByTestId("edit-text-dialog-header");
     expect(titleDisplay).toBeInTheDocument();
   });
+
+  test('renders title not in existance', () => {
+    render(<Provider store={store}><EditTextDialog 
+        isDialogOpen={true}
+        dialogTitle=""
+        dialogDescription=""
+        dialogFieldLabel=""
+        dialogFieldValue=""
+        handleDialogClose={() => {}}/></Provider>);
+    const titleDisplay = screen.getByTestId("edit-text-dialog-header-that-does-not-exist");
+    expect(titleDisplay).toBeInTheDocument();
+  });
