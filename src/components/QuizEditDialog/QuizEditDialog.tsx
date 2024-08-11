@@ -228,7 +228,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   }, [quiz]);
 
   useEffect(() => {
-    setQuiz({...initialQuiz});
+    setQuiz(JSON.parse(JSON.stringify(initialQuiz)));
   }, [initialQuiz]);
 
   return (

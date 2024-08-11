@@ -1,0 +1,1 @@
+export const NO_SCORE_DISPLAY = "<None>";
