@@ -1,10 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import App from './App';
-import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { renderWithProviders } from './shared/test-utils';
 
 test('renders title text', () => {
-  render(<Provider store={store}><App /></Provider>);
+  renderWithProviders(<App />);
   const titleElement = screen.getByText("Adept Quiz Wizard");
   expect(titleElement).toBeInTheDocument();
 });

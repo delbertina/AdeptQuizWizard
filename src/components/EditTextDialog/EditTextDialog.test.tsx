@@ -1,12 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import EditTextDialog from "./EditTextDialog";
-import { store } from "../../store/store";
-import { Provider } from "react-redux";
 import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "../../shared/test-utils";
 
 test("renders text field", () => {
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -15,15 +13,13 @@ test("renders text field", () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}
       />
-    </Provider>
   );
   const textField = screen.getByTestId("editedText");
   expect(textField).toBeInTheDocument();
 });
 
 test("renders title", () => {
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -32,15 +28,13 @@ test("renders title", () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}
       />
-    </Provider>
   );
   const titleDisplay = screen.getByTestId("edit-text-dialog-header");
   expect(titleDisplay).toBeInTheDocument();
 });
 
 test("renders no description when blank", () => {
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -49,7 +43,6 @@ test("renders no description when blank", () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}
       />
-    </Provider>
   );
   const descriptionDisplay = screen.queryByTestId(
     "edit-text-dialog-description"
@@ -58,8 +51,7 @@ test("renders no description when blank", () => {
 });
 
 test("renders description", () => {
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -68,7 +60,6 @@ test("renders description", () => {
         dialogFieldValue=""
         handleDialogClose={() => {}}
       />
-    </Provider>
   );
   const descriptionDisplay = screen.getByTestId("edit-text-dialog-description");
   expect(descriptionDisplay).toBeInTheDocument();
@@ -76,8 +67,7 @@ test("renders description", () => {
 
 test("submit button calls close", async () => {
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -86,7 +76,6 @@ test("submit button calls close", async () => {
         dialogFieldValue=""
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const submitButton = screen.getByTestId("submit-button");
   expect(submitButton).toBeInTheDocument();
@@ -98,8 +87,7 @@ test("submit button calls close", async () => {
 
 test("cancel button calls close", async () => {
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -108,7 +96,6 @@ test("cancel button calls close", async () => {
         dialogFieldValue=""
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const cancelButton = screen.getByTestId("cancel-button");
   expect(cancelButton).toBeInTheDocument();
@@ -121,8 +108,7 @@ test("cancel button calls close", async () => {
 test("submit button calls close with initial data", async () => {
   const initialFieldValue = "Initial Field Value";
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -131,7 +117,6 @@ test("submit button calls close with initial data", async () => {
         dialogFieldValue={initialFieldValue}
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const submitButton = screen.getByTestId("submit-button");
   expect(submitButton).toBeInTheDocument();
@@ -145,8 +130,7 @@ test("submit button calls close with initial data", async () => {
 test("cancel button calls close without initial data", async () => {
   const initialFieldValue = "Initial Field Value";
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -155,7 +139,6 @@ test("cancel button calls close without initial data", async () => {
         dialogFieldValue={initialFieldValue}
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const cancelButton = screen.getByTestId("cancel-button");
   expect(cancelButton).toBeInTheDocument();
@@ -170,8 +153,7 @@ test("submit button calls close with new data", async () => {
   const newFieldValue = "New Field Value";
   const fieldLabel = "Field Label";
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -180,7 +162,6 @@ test("submit button calls close with new data", async () => {
         dialogFieldValue=""
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const textField = screen.getByLabelText(fieldLabel, {exact:false});
   await userEvent.type(textField, newFieldValue);
@@ -199,8 +180,7 @@ test("cancel button calls close without new data", async () => {
   const newFieldValue = "New Field Value";
   const fieldLabel = "Field Label";
   const onSubmit = jest.fn();
-  render(
-    <Provider store={store}>
+  renderWithProviders(
       <EditTextDialog
         isDialogOpen={true}
         dialogTitle=""
@@ -209,7 +189,6 @@ test("cancel button calls close without new data", async () => {
         dialogFieldValue=""
         handleDialogClose={(edited?: string) => onSubmit(edited)}
       />
-    </Provider>
   );
   const textField = screen.getByLabelText(fieldLabel, {exact:false});
   await userEvent.type(textField, newFieldValue);
