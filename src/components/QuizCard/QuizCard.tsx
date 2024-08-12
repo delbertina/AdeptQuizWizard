@@ -27,12 +27,18 @@ function QuizCard(props: QuizCardProps) {
 
   return (
     <>
-      <Card onClick={() => props.onClick()} className="quiz-card">
+      <Card
+        onClick={() => props.onClick()}
+        className="quiz-card"
+        data-testid="quiz-card"
+      >
         <CardHeader
           className="quiz-card-header"
+          data-testid="quiz-card-header"
           title={
             <Typography
               className="quiz-card-header-title"
+              data-testid="quiz-card-header-title"
               variant="h6"
               component="h2"
             >
@@ -42,13 +48,17 @@ function QuizCard(props: QuizCardProps) {
           action={
             <IconButton
               aria-label="edit"
+              data-testid="quiz-card-edit-button"
               onClick={(e: React.MouseEvent) => handleEditClick(e)}
             >
               <Edit />
             </IconButton>
           }
         ></CardHeader>
-        <CardContent className="quiz-card-content">
+        <CardContent
+          className="quiz-card-content"
+          data-testid="quiz-card-content"
+        >
           <Typography
             sx={{
               overflow: "hidden",
@@ -59,12 +69,13 @@ function QuizCard(props: QuizCardProps) {
             }}
             gutterBottom
             className="quiz-card-description"
+            data-testid="quiz-card-description"
             variant="body1"
             component="div"
           >
             {props.quiz.description}
           </Typography>
-          <QuizCardFooter scores={props.scores} onClick={props.onScoreClick}/>
+          <QuizCardFooter scores={props.scores} onClick={props.onScoreClick} />
         </CardContent>
       </Card>
     </>

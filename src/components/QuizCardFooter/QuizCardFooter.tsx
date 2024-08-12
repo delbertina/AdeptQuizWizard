@@ -16,7 +16,7 @@ function QuizCardFooter(props: QuizCardFooterProps) {
   };
 
   return (
-    <div onClick={(e: React.MouseEvent) => handleClick(e)}>
+    <div data-testid="quiz-card-footer" onClick={(e: React.MouseEvent) => handleClick(e)}>
       <Typography
         sx={{ fontWeight: "bold" }}
         className="quiz-card-score"
@@ -31,7 +31,7 @@ function QuizCardFooter(props: QuizCardFooterProps) {
                   average(
                     props.scores
                       // Maybe add filter to only scores after the last edit of the quiz
-                      .map((score) => score.result) ?? []
+                      .map((score) => score.result)
                   )
                 )
               ) + "%"
