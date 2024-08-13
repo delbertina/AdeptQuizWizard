@@ -27,7 +27,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "set DEBUG_PRINT_LIMIT=99999999 && react-scripts test",
     "test:coverage": "react-scripts test --env=jsdom --watchAll=false --coverage",
     "eject": "react-scripts eject"
   },

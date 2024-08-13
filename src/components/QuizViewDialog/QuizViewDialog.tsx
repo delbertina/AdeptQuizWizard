@@ -80,7 +80,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
         aria-describedby="quiz-view-dialog-description"
       >
         {/* header toolbar */}
-        <DialogTitle id="quiz-view-dialog-header">
+        <DialogTitle id="quiz-view-dialog-header" data-testid="quiz-view-dialog-header">
           <div id="quiz-view-dialog-title-column">
             <Typography
               gutterBottom
@@ -102,6 +102,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
           <div>
             <IconButton
               aria-label="close quiz"
+              data-testid="quiz-view-dialog-close-button"
               color="error"
               size="large"
               onClick={() => props.handleDialogClose()}
@@ -130,6 +131,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                     <ListItem key={aIndex}>
                       <ListItemButton
                         onClick={() => handleAnswerSelect(qIndex, answer.id)}
+                        data-testid={"quiz-view-content-question-item-" + qIndex + "-" + aIndex}
                         disabled={
                           checkedAnswers.length > qIndex &&
                           checkedAnswers[qIndex] > -1
@@ -152,6 +154,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               <div className="quiz-view-content-questions-check row">
                 {checkedAnswers[qIndex] === -1 && (
                   <Button
+                    data-testid={"quiz-view-content-question-check-button-" + qIndex}
                     variant="contained"
                     onClick={() => handleAnswerCheck(qIndex)}
                     disabled={
@@ -170,6 +173,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                       {checkedAnswers[qIndex] === question.correctAnswerId && (
                         <Alert
                           className="quiz-view-content-questions-check-alert"
+                          data-testid={"quiz-view-content-question-check-alert-" + qIndex}
                           severity="success"
                         >
                           {question.feedbackTrue}
@@ -178,6 +182,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                       {checkedAnswers[qIndex] !== question.correctAnswerId && (
                         <Alert
                           className="quiz-view-content-questions-check-alert"
+                          data-testid={"quiz-view-content-question-check-alert-" + qIndex}
                           severity="error"
                         >
                           {question.feedbackFalse}
@@ -194,6 +199,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
           <Button
             variant="contained"
             color="success"
+            data-testid="quiz-view-actions-submit"
             onClick={() => handleQuizSubmit()}
             disabled={!isAllChecked}
           >
