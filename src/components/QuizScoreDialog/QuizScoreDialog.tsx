@@ -11,6 +11,7 @@ import { average, formatScore } from "../../shared/helper";
 import { useSelector } from "react-redux";
 import { selectCurrentQuiz } from "../../store/quizSlice";
 import { selectScores } from "../../store/scoreSlice";
+import { NO_SCORE_DISPLAY } from "../../shared/constants";
 
 export interface QuizScoreDialogProps {
   isDialogOpen: boolean;
@@ -33,7 +34,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
         aria-describedby="quiz-score-dialog-description"
       >
         {/* header toolbar */}
-        <DialogTitle id="quiz-score-dialog-header">
+        <DialogTitle id="quiz-score-dialog-header" data-testid="quiz-score-dialog-header">
           <div id="quiz-score-dialog-title-column">
             <Typography
               gutterBottom
@@ -46,24 +47,26 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
             <Typography
               gutterBottom
               id="quiz-score-dialog-description"
+              data-testid="quiz-score-dialog-description"
               variant="body1"
               component="div"
             >
               {"Avg Score: " +
                 (scores.length
-                  ? Math.round(
+                  ? formatScore(
                       average(
                         scores
                           // Maybe add filter to only scores after the last edit of the quiz
                           .map((score) => score.result) ?? []
                       )
                     ) + "%"
-                  : "<None>")}
+                  : NO_SCORE_DISPLAY)}
             </Typography>
           </div>
           <div>
             <IconButton
               aria-label="close score dialog"
+              data-testid="score-dialog-close-button"
               color="error"
               size="large"
               onClick={() => props.handleDialogClose()}
