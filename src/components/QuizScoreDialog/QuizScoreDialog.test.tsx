@@ -113,3 +113,30 @@ test("renders average score percentage with scores in state", () => {
   const score2Text = screen.getByText("60.00%", { exact: false });
   expect(score2Text).toBeInTheDocument();
 });
+
+test("renders sorted scores with old scores marked", () => {
+    renderWithProviders(
+      <QuizScoreDialog isDialogOpen={true} handleDialogClose={() => {}} />,
+      {
+        preloadedState: {
+          quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+          score: {
+            scores: [
+              { id: 0, result: 40, quizId: 0, timestamp: 1 },
+              { id: 0, result: 60, quizId: 0, timestamp: -1 },
+              { id: 0, result: 50, quizId: 0, timestamp: 0 },
+            ],
+            nextIndex: 1,
+          },
+        },
+      }
+    );
+    const scoreDisplay = screen.getByTestId("quiz-score-dialog-description");
+    expect(scoreDisplay).toBeInTheDocument();
+    const score1Text = screen.getByTestId("quiz-score-dialog-content-row-0");
+    expect(score1Text).toHaveTextContent(/.*60.00%/);
+    const score2Text = screen.getByTestId("quiz-score-dialog-content-row-1");
+    expect(score2Text).toHaveTextContent(/.*50.00%/);
+    const score3Text = screen.getByTestId("quiz-score-dialog-content-row-2");
+    expect(score3Text).toHaveTextContent(/.*40.00%/);
+  });

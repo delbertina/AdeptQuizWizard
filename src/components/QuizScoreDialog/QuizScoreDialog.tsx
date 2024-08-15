@@ -57,7 +57,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
                       average(
                         scores
                           // Maybe add filter to only scores after the last edit of the quiz
-                          .map((score) => score.result) ?? []
+                          .map((score) => score.result)
                       )
                     ) + "%"
                   : NO_SCORE_DISPLAY)}
@@ -83,6 +83,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
             .map((score, i) => (
               <div
                 key={i}
+                data-testid={"quiz-score-dialog-content-row-" + i}
                 className={
                   "quiz-score-dialog-content-row " +
                   (score.timestamp < quiz.modified
