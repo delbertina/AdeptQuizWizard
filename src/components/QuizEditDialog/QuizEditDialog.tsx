@@ -542,7 +542,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             data-testid="quiz-edit-dialog-submit-button"
             variant="contained"
             onClick={() => handleSubmit()}
-            disabled={isSubmitDisabled}
+            disabled={isSubmitDisabled ? true : false}
           >
             Submit
           </Button>
@@ -554,7 +554,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
         dialogTitle={QUIZEDITDIALOG_EDITTITLE_DIALOGTITLE}
         dialogDescription={QUIZEDITDIALOG_EDITTITLE_DIALOGDESCRIPTION}
         dialogFieldLabel={QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL}
-        dialogFieldValue={quiz?.title ?? ""}
+        dialogFieldValue={quiz.title}
         handleDialogClose={(edited?: string) => handleEditQuizTitle(edited)}
       />
       {/* Edit Quiz Description */}
@@ -563,7 +563,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
         dialogTitle={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGTITLE}
         dialogDescription={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGDESCRIPTION}
         dialogFieldLabel={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL}
-        dialogFieldValue={quiz?.description ?? ""}
+        dialogFieldValue={quiz.description}
         handleDialogClose={(edited?: string) =>
           handleEditQuizDescription(edited)
         }
