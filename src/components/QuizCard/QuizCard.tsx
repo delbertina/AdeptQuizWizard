@@ -10,25 +10,39 @@ import {
 import { Score } from "../../types/score";
 import QuizCardFooter from "../QuizCardFooter/QuizCardFooter";
 import { Quiz } from "../../types/quiz";
+import { useDispatch } from "react-redux";
+import { setCurrentQuiz } from "../../store/quizSlice";
+import { setDialog } from "../../store/dialogSlice";
+import { DIALOG_NAME } from "../../types/dialog";
 
 export interface QuizCardProps {
   quiz: Quiz;
   scores: Score[];
-  onClick: () => void;
-  onEditClick: () => void;
-  onScoreClick: () => void;
 }
 
 function QuizCard(props: QuizCardProps) {
+  const dispatch = useDispatch();
+
+  const handleCardClick = (): void => {
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.QUIZ_VIEW));
+  }
+  
   const handleEditClick = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    props.onEditClick();
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.QUIZ_EDIT));
   };
+
+  const handleFooterClick = (): void => {
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.SCORE_VIEW));
+  }
 
   return (
     <>
       <Card
-        onClick={() => props.onClick()}
+        onClick={handleCardClick}
         className="quiz-card"
         data-testid="quiz-card"
       >
@@ -75,7 +89,7 @@ function QuizCard(props: QuizCardProps) {
           >
             {props.quiz.description}
           </Typography>
-          <QuizCardFooter scores={props.scores} onClick={props.onScoreClick} />
+          <QuizCardFooter scores={props.scores} onClick={handleFooterClick} />
         </CardContent>
       </Card>
     </>

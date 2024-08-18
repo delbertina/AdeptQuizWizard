@@ -1,8 +1,9 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { renderWithProviders } from "../../shared/test-utils";
 import { Quiz } from "../../types/quiz";
-import userEvent from "@testing-library/user-event";
 import HomePage from "./HomePage";
+import { Score } from "../../types/score";
+import { NO_SCORE_DISPLAY } from "../../shared/constants";
 
 const quizTitle = "Test Quiz Title";
 const quizDescription = "Test quiz description";
@@ -54,12 +55,16 @@ const testQuiz2: Quiz = {
     ],
   };
 
+  const testScore: Score = {
+    id: 1,
+    quizId: 2,
+    result: 50,
+    timestamp: 0
+  }
+
 test("renders multiple quizzes and correctly sorts", () => {
   renderWithProviders(
-    <HomePage quizzes={[testQuiz1, testQuiz2]} scores={[]}
-    onQuizClick={(quiz: Quiz) => {}}
-    onQuizEditClick={(quiz: Quiz) => {}}
-    onQuizScoreClick={(quiz: Quiz) => {}} />,
+    <HomePage quizzes={[testQuiz1, testQuiz2]} scores={[testScore]} />,
     {
       preloadedState: {
         quiz: { quizzes: [testQuiz1, testQuiz2], nextIndex: 3, current: testQuiz1 },
@@ -71,4 +76,7 @@ test("renders multiple quizzes and correctly sorts", () => {
   const quizCards = screen.getAllByTestId("quiz-card-header-title");
   expect(quizCards).toHaveLength(2);
   expect(quizCards[0]).toHaveTextContent(quizTitle + 2);
+  const quizCardScores = screen.getAllByTestId("quiz-card-score");
+  expect(quizCardScores).toHaveLength(2);
+  expect(quizCardScores[1]).toHaveTextContent(NO_SCORE_DISPLAY);
 });

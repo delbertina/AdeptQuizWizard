@@ -6,9 +6,6 @@ import "./HomePage.scss";
 export interface HomePageProps {
   quizzes: Quiz[];
   scores: Score[];
-  onQuizClick: (quiz: Quiz) => void;
-  onQuizEditClick: (quiz: Quiz) => void;
-  onQuizScoreClick: (quiz: Quiz) => void;
 }
 
 function HomePage(props: HomePageProps) {
@@ -21,9 +18,6 @@ function HomePage(props: HomePageProps) {
             key={index}
             quiz={quiz}
             scores={props.scores.filter((score) => score.quizId === quiz.id)}
-            onClick={() => props.onQuizClick(quiz)}
-            onEditClick={() => props.onQuizEditClick(quiz)}
-            onScoreClick={() => props.onQuizScoreClick(quiz)}
           ></QuizCard>
         ))}
     </div>

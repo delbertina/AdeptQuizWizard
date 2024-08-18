@@ -3,7 +3,7 @@ import { Add } from "@mui/icons-material";
 import { AppBar, Toolbar, Typography, IconButton } from "@mui/material";
 import QuizEditDialog from "./components/QuizEditDialog/QuizEditDialog";
 import QuizViewDialog from "./components/QuizViewDialog/QuizViewDialog";
-import { NewQuiz, Quiz } from "./types/quiz";
+import { NewQuiz } from "./types/quiz";
 import HomePage from "./pages/HomePage/HomePage";
 import QuizScoreDialog from "./components/QuizScoreDialog/QuizScoreDialog";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,13 +23,9 @@ function App() {
     dispatch(setCurrentQuiz(NewQuiz));
   };
 
-  const handleDialogOpen = (quiz: Quiz, dialog: DIALOG_NAME): void => {
-    dispatch(setDialog(dialog));
-    dispatch(setCurrentQuiz(quiz));
-  };
-
   const handleAddNewQuiz = (): void => {
-    handleDialogOpen(NewQuiz, DIALOG_NAME.QUIZ_EDIT);
+    dispatch(setDialog(DIALOG_NAME.QUIZ_EDIT));
+    dispatch(setCurrentQuiz(NewQuiz));
   };
 
   return (
@@ -54,15 +50,6 @@ function App() {
         <HomePage
           quizzes={quizzes}
           scores={scores}
-          onQuizClick={(quiz: Quiz) =>
-            handleDialogOpen(quiz, DIALOG_NAME.QUIZ_VIEW)
-          }
-          onQuizEditClick={(quiz: Quiz) =>
-            handleDialogOpen(quiz, DIALOG_NAME.QUIZ_EDIT)
-          }
-          onQuizScoreClick={(quiz: Quiz) =>
-            handleDialogOpen(quiz, DIALOG_NAME.SCORE_VIEW)
-          }
         />
       </div>
       {dialog ?? "null"}
