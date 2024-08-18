@@ -8,25 +8,32 @@ import {
   IconButton,
 } from "@mui/material";
 import { average, formatScore } from "../../shared/helper";
-import { useSelector } from "react-redux";
-import { selectCurrentQuiz } from "../../store/quizSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentQuiz, setCurrentQuiz } from "../../store/quizSlice";
 import { selectScores } from "../../store/scoreSlice";
 import { NO_SCORE_DISPLAY } from "../../shared/constants";
+import { setDialog } from "../../store/dialogSlice";
+import { NewQuiz } from "../../types/quiz";
 
 export interface QuizScoreDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: () => void;
 }
 
 function QuizScoreDialog(props: QuizScoreDialogProps) {
   const quiz = useSelector(selectCurrentQuiz);
   const scores = useSelector(selectScores);
+  const dispatch = useDispatch();
+
+  const closeDialog = () => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
+  }
 
   return (
     <>
       <Dialog
         open={props.isDialogOpen}
-        onClose={() => props.handleDialogClose()}
+        onClose={closeDialog}
         fullWidth={true}
         maxWidth={"sm"}
         scroll="paper"
@@ -69,7 +76,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
               data-testid="score-dialog-close-button"
               color="error"
               size="large"
-              onClick={() => props.handleDialogClose()}
+              onClick={closeDialog}
             >
               <Close />
             </IconButton>

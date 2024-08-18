@@ -18,11 +18,6 @@ function App() {
   const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
-  const closeDialog = (): void => {
-    dispatch(setDialog(null));
-    dispatch(setCurrentQuiz(NewQuiz));
-  };
-
   const handleAddNewQuiz = (): void => {
     dispatch(setDialog(DIALOG_NAME.QUIZ_EDIT));
     dispatch(setCurrentQuiz(NewQuiz));
@@ -38,6 +33,7 @@ function App() {
             </Typography>
             <IconButton
               size="large"
+              data-testid="app-add-new-quiz-button"
               aria-label="account of current user"
               onClick={() => handleAddNewQuiz()}
               color="inherit"
@@ -58,20 +54,17 @@ function App() {
           {dialog === DIALOG_NAME.QUIZ_EDIT && (
             <QuizEditDialog
               isDialogOpen={dialog === DIALOG_NAME.QUIZ_EDIT}
-              handleDialogClose={() => closeDialog()}
             />
           )}
           {dialog === DIALOG_NAME.QUIZ_VIEW && (
             <QuizViewDialog
               isDialogOpen={dialog === DIALOG_NAME.QUIZ_VIEW}
-              handleDialogClose={() => closeDialog()}
             />
           )}
           {dialog === DIALOG_NAME.SCORE_VIEW && (
             <>
               <QuizScoreDialog
                 isDialogOpen={dialog === DIALOG_NAME.SCORE_VIEW}
-                handleDialogClose={() => closeDialog()}
               />
             </>
           )}

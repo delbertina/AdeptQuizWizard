@@ -16,13 +16,14 @@ import {
   Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { selectCurrentQuiz } from "../../store/quizSlice";
+import { selectCurrentQuiz, setCurrentQuiz } from "../../store/quizSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { addScore } from "../../store/scoreSlice";
+import { setDialog } from "../../store/dialogSlice";
+import { NewQuiz } from "../../types/quiz";
 
 export interface QuizViewDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: () => void;
 }
 
 function QuizViewDialog(props: QuizViewDialogProps) {
@@ -32,6 +33,11 @@ function QuizViewDialog(props: QuizViewDialogProps) {
 
   const quiz = useSelector(selectCurrentQuiz);
   const dispatch = useDispatch();
+
+  const closeModal = (): void => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
+  }
 
   const handleQuizSubmit = (): void => {
     const correctAns = quiz.questions.filter(
@@ -47,7 +53,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
       timestamp: timestamp,
     };
     dispatch(addScore(newScore));
-    props.handleDialogClose();
+    closeModal();
   };
 
   const handleAnswerSelect = (questionId: number, answerId: number): void => {
@@ -72,7 +78,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
     <>
       <Dialog
         open={props.isDialogOpen}
-        onClose={() => props.handleDialogClose()}
+        onClose={closeModal}
         fullWidth={true}
         maxWidth={"md"}
         scroll="paper"
@@ -105,7 +111,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               data-testid="quiz-view-dialog-close-button"
               color="error"
               size="large"
-              onClick={() => props.handleDialogClose()}
+              onClick={closeModal}
             >
               <Close />
             </IconButton>

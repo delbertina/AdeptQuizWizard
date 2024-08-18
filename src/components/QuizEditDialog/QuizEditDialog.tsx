@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
 import { NewQuiz, Quiz } from "../../types/quiz";
 import { useDispatch, useSelector } from "react-redux";
-import { addQuiz, selectCurrentQuiz, updateQuiz } from "../../store/quizSlice";
+import { addQuiz, selectCurrentQuiz, setCurrentQuiz, updateQuiz } from "../../store/quizSlice";
 import {
   QUIZEDITDIALOG_EDITFEEDBACK_DIALOGTITLE,
   QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_CORRECT,
@@ -42,10 +42,10 @@ import {
   QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL,
   QUIZEDITDIALOG_EDITTITLE_DIALOGTITLE,
 } from "../../shared/constants";
+import { setDialog } from "../../store/dialogSlice";
 
 export interface QuizEditDialogProps {
   isDialogOpen: boolean;
-  handleDialogClose: () => void;
 }
 
 function QuizEditDialog(props: QuizEditDialogProps) {
@@ -71,13 +71,18 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   const initialQuiz = useSelector(selectCurrentQuiz);
   const dispatch = useDispatch();
 
+  const closeDialog = (): void => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
+  }
+
   const handleSubmit = (): void => {
     if (!!quiz.id) {
       dispatch(updateQuiz(quiz));
     } else {
       dispatch(addQuiz(quiz));
     }
-    props.handleDialogClose();
+    closeDialog();
   };
 
   const handleEditQuizTitleOpen = (): void => {
@@ -234,7 +239,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
     <>
       <Dialog
         open={props.isDialogOpen}
-        onClose={() => props.handleDialogClose()}
+        onClose={closeDialog}
         fullWidth={true}
         maxWidth={"md"}
         scroll="paper"
@@ -534,7 +539,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
         <DialogActions>
           <Button
             data-testid="quiz-edit-dialog-cancel-button"
-            onClick={() => props.handleDialogClose()}
+            onClick={closeDialog}
           >
             Cancel
           </Button>
