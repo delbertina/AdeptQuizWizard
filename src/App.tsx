@@ -43,31 +43,13 @@ function App() {
           </Toolbar>
         </AppBar>
         {/* {JSON.stringify(quizzes)} */}
-        <HomePage
-          quizzes={quizzes}
-          scores={scores}
-        />
+        <HomePage quizzes={quizzes} scores={scores} />
       </div>
-      {dialog ?? "null"}
       {!!dialog && (
         <>
-          {dialog === DIALOG_NAME.QUIZ_EDIT && (
-            <QuizEditDialog
-              isDialogOpen={dialog === DIALOG_NAME.QUIZ_EDIT}
-            />
-          )}
-          {dialog === DIALOG_NAME.QUIZ_VIEW && (
-            <QuizViewDialog
-              isDialogOpen={dialog === DIALOG_NAME.QUIZ_VIEW}
-            />
-          )}
-          {dialog === DIALOG_NAME.SCORE_VIEW && (
-            <>
-              <QuizScoreDialog
-                isDialogOpen={dialog === DIALOG_NAME.SCORE_VIEW}
-              />
-            </>
-          )}
+          {dialog === DIALOG_NAME.QUIZ_EDIT && <QuizEditDialog />}
+          {dialog === DIALOG_NAME.QUIZ_VIEW && <QuizViewDialog />}
+          {dialog === DIALOG_NAME.SCORE_VIEW && <QuizScoreDialog />}
         </>
       )}
     </div>

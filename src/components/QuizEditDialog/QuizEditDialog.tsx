@@ -23,7 +23,12 @@ import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
 import { NewQuiz, Quiz } from "../../types/quiz";
 import { useDispatch, useSelector } from "react-redux";
-import { addQuiz, selectCurrentQuiz, setCurrentQuiz, updateQuiz } from "../../store/quizSlice";
+import {
+  addQuiz,
+  selectCurrentQuiz,
+  setCurrentQuiz,
+  updateQuiz,
+} from "../../store/quizSlice";
 import {
   QUIZEDITDIALOG_EDITFEEDBACK_DIALOGTITLE,
   QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_CORRECT,
@@ -42,13 +47,10 @@ import {
   QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL,
   QUIZEDITDIALOG_EDITTITLE_DIALOGTITLE,
 } from "../../shared/constants";
-import { setDialog } from "../../store/dialogSlice";
+import { selectDialog, setDialog } from "../../store/dialogSlice";
+import { DIALOG_NAME } from "../../types/dialog";
 
-export interface QuizEditDialogProps {
-  isDialogOpen: boolean;
-}
-
-function QuizEditDialog(props: QuizEditDialogProps) {
+function QuizEditDialog() {
   const [isEditQuizTitleDialogOpen, setIsEditQuizTitleDialogOpen] =
     useState<boolean>(false);
   const [isEditQuizDescDialogOpen, setIsEditQuizDescDialogOpen] =
@@ -69,12 +71,13 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
 
   const initialQuiz = useSelector(selectCurrentQuiz);
+  const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
   const closeDialog = (): void => {
     dispatch(setDialog(null));
     dispatch(setCurrentQuiz(NewQuiz));
-  }
+  };
 
   const handleSubmit = (): void => {
     if (!!quiz.id) {
@@ -238,7 +241,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   return (
     <>
       <Dialog
-        open={props.isDialogOpen}
+        open={dialog === DIALOG_NAME.QUIZ_EDIT}
         onClose={closeDialog}
         fullWidth={true}
         maxWidth={"md"}

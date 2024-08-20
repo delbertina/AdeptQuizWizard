@@ -3,7 +3,14 @@ import { renderWithProviders } from "../../shared/test-utils";
 import { Quiz } from "../../types/quiz";
 import QuizEditDialog from "./QuizEditDialog";
 import userEvent from "@testing-library/user-event";
-import { QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL, QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL, QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL, QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL, QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL } from "../../shared/constants";
+import {
+  QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL,
+} from "../../shared/constants";
+import { DIALOG_NAME } from "../../types/dialog";
 
 const quizTitle = "Test Quiz Title";
 const quizDescription = "Test quiz description";
@@ -35,111 +42,119 @@ const testQuiz: Quiz = {
 };
 
 test("renders data of input quiz", () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizTitleDisplay = screen.getByTestId("quiz-edit-dialog-quiz-title");
   expect(quizTitleDisplay).toHaveTextContent(quizTitle);
 });
 
 test("escape button calls dialog close", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const dialogHeader = screen.getByTestId("quiz-edit-dialog-header");
   fireEvent.keyDown(dialogHeader, {
     key: "Escape",
     keyCode: 27,
     which: 27,
   });
-  // await waitFor(() => {
-  //   expect(onClose).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-edit-dialog-header")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("cancel button calls dialog close", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const cancelButton = screen.getByTestId("quiz-edit-dialog-cancel-button");
   fireEvent.click(cancelButton);
-  // await waitFor(() => {
-  //   expect(onClose).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-edit-dialog-header")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("submit button for edit quiz calls dialog close", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [{...testQuiz, id: 1}], nextIndex: 1, current: {...testQuiz, id: 1} },
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: {
+        quizzes: [{ ...testQuiz, id: 1 }],
+        nextIndex: 1,
+        current: { ...testQuiz, id: 1 },
       },
-    }
-  );
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const submitButton = screen.getByTestId("quiz-edit-dialog-submit-button");
   await waitFor(() => {
     expect(submitButton).toBeEnabled();
   });
   fireEvent.click(submitButton);
-  // await waitFor(() => {
-  //   expect(onClose).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-edit-dialog-header")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("submit button for new quiz calls dialog close", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const submitButton = screen.getByTestId("quiz-edit-dialog-submit-button");
   await waitFor(() => {
     expect(submitButton).toBeEnabled();
   });
   fireEvent.click(submitButton);
-  // await waitFor(() => {
-  //   expect(onClose).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-edit-dialog-header")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("submit button for existing quiz calls dialog close", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: {...testQuiz, id: 1} },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: { ...testQuiz, id: 1 } },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const submitButton = screen.getByTestId("quiz-edit-dialog-submit-button");
   await waitFor(() => {
     expect(submitButton).toBeEnabled();
   });
   fireEvent.click(submitButton);
-  // await waitFor(() => {
-  //   expect(onClose).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-edit-dialog-header")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("clicking edit quiz title opens edit text dialog", async () => {
   const newTitle = "New Quiz Title";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizTitleEdit = screen.getByTestId(
     "quiz-edit-dialog-quiz-title-edit-button"
   );
@@ -153,7 +168,9 @@ test("clicking edit quiz title opens edit text dialog", async () => {
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizTitleEdit);
@@ -161,7 +178,10 @@ test("clicking edit quiz title opens edit text dialog", async () => {
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newTitle);
   expect(textField).toHaveValue(quizTitle + newTitle);
 
@@ -169,7 +189,9 @@ test("clicking edit quiz title opens edit text dialog", async () => {
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
   const quizTitleElm = screen.getByTestId("quiz-edit-dialog-quiz-title");
   expect(quizTitleElm).toBeInTheDocument();
@@ -178,14 +200,12 @@ test("clicking edit quiz title opens edit text dialog", async () => {
 
 test("clicking edit quiz description opens edit text dialog", async () => {
   const newDescription = "New Description";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizDescriptionEdit = screen.getByTestId(
     "quiz-edit-dialog-quiz-description-edit-button"
   );
@@ -199,7 +219,9 @@ test("clicking edit quiz description opens edit text dialog", async () => {
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizDescriptionEdit);
@@ -207,7 +229,10 @@ test("clicking edit quiz description opens edit text dialog", async () => {
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newDescription);
   expect(textField).toHaveValue(quizDescription + newDescription);
 
@@ -215,7 +240,9 @@ test("clicking edit quiz description opens edit text dialog", async () => {
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
   const quizDesc = screen.getByTestId("quiz-edit-dialog-quiz-description");
   expect(quizDesc).toBeInTheDocument();
@@ -224,14 +251,12 @@ test("clicking edit quiz description opens edit text dialog", async () => {
 
 test("clicking edit quiz question text opens edit text dialog", async () => {
   const newQuestionText = "New Question Text";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizQuestionEdit = screen.getByTestId(
     "quiz-edit-dialog-content-question-edit-button-0"
   );
@@ -246,7 +271,9 @@ test("clicking edit quiz question text opens edit text dialog", async () => {
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizQuestionEdit);
@@ -254,7 +281,10 @@ test("clicking edit quiz question text opens edit text dialog", async () => {
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newQuestionText);
   expect(textField).toHaveValue(quizQuestionText + newQuestionText);
 
@@ -262,23 +292,25 @@ test("clicking edit quiz question text opens edit text dialog", async () => {
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
-  const quizQuestText = screen.getByTestId("quiz-edit-dialog-content-question-text-0");
+  const quizQuestText = screen.getByTestId(
+    "quiz-edit-dialog-content-question-text-0"
+  );
   expect(quizQuestText).toBeInTheDocument();
   expect(quizQuestText).toHaveTextContent(quizQuestionText + newQuestionText);
 });
 
 test("clicking edit quiz question answer text opens edit text dialog", async () => {
   const newAnswerText = "New Answer Text";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizQuestionAnswerEdit = screen.getByTestId(
     "quiz-edit-dialog-content-question-answer-edit-button-0-0"
   );
@@ -293,7 +325,9 @@ test("clicking edit quiz question answer text opens edit text dialog", async () 
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizQuestionAnswerEdit);
@@ -301,7 +335,10 @@ test("clicking edit quiz question answer text opens edit text dialog", async () 
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newAnswerText);
   expect(textField).toHaveValue(quizQuestionCorrectAnswer + newAnswerText);
 
@@ -309,23 +346,27 @@ test("clicking edit quiz question answer text opens edit text dialog", async () 
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
-  const quizAnswerText = screen.getByTestId("quiz-edit-dialog-content-question-answer-text-0-0");
+  const quizAnswerText = screen.getByTestId(
+    "quiz-edit-dialog-content-question-answer-text-0-0"
+  );
   expect(quizAnswerText).toBeInTheDocument();
-  expect(quizAnswerText).toHaveTextContent(quizQuestionCorrectAnswer + newAnswerText);
+  expect(quizAnswerText).toHaveTextContent(
+    quizQuestionCorrectAnswer + newAnswerText
+  );
 });
 
 test("clicking edit quiz question correct feedback text opens edit text dialog", async () => {
   const newCorrectFeedback = "New Correct Feedback";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizQuestionCorrectFeedbackEdit = screen.getByTestId(
     "quiz-edit-dialog-content-question-feedback-true-button-0"
   );
@@ -340,7 +381,9 @@ test("clicking edit quiz question correct feedback text opens edit text dialog",
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizQuestionCorrectFeedbackEdit);
@@ -348,31 +391,40 @@ test("clicking edit quiz question correct feedback text opens edit text dialog",
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newCorrectFeedback);
-  expect(textField).toHaveValue(quizQuestionCorrectFeedback + newCorrectFeedback);
+  expect(textField).toHaveValue(
+    quizQuestionCorrectFeedback + newCorrectFeedback
+  );
 
   const submitButton = screen.getByTestId("submit-button");
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
-  const quizCorrectFeedback = screen.getByTestId("quiz-edit-dialog-content-question-feedback-true-0");
+  const quizCorrectFeedback = screen.getByTestId(
+    "quiz-edit-dialog-content-question-feedback-true-0"
+  );
   expect(quizCorrectFeedback).toBeInTheDocument();
-  expect(quizCorrectFeedback).toHaveTextContent(quizQuestionCorrectFeedback + newCorrectFeedback);
+  expect(quizCorrectFeedback).toHaveTextContent(
+    quizQuestionCorrectFeedback + newCorrectFeedback
+  );
 });
 
 test("clicking edit quiz question incorrect feedback text opens edit text dialog", async () => {
   const newIncorrectFeedback = "New Incorrect Feedback";
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizQuestionIncorrectFeedbackEdit = screen.getByTestId(
     "quiz-edit-dialog-content-question-feedback-false-button-0"
   );
@@ -387,7 +439,9 @@ test("clicking edit quiz question incorrect feedback text opens edit text dialog
   expect(cancelButton).toBeInTheDocument();
   fireEvent.click(cancelButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
 
   fireEvent.click(quizQuestionIncorrectFeedbackEdit);
@@ -395,31 +449,39 @@ test("clicking edit quiz question incorrect feedback text opens edit text dialog
     expect(screen.getByTestId("edit-text-dialog-header")).toBeInTheDocument();
   });
 
-
-  const textField = screen.getByLabelText(QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL, {exact:false});
+  const textField = screen.getByLabelText(
+    QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL,
+    { exact: false }
+  );
   await userEvent.type(textField, newIncorrectFeedback);
-  expect(textField).toHaveValue(quizQuestionIncorrectFeedback + newIncorrectFeedback);
+  expect(textField).toHaveValue(
+    quizQuestionIncorrectFeedback + newIncorrectFeedback
+  );
 
   const submitButton = screen.getByTestId("submit-button");
   expect(submitButton).toBeInTheDocument();
   fireEvent.click(submitButton);
   await waitFor(() => {
-    expect(screen.queryByTestId("edit-text-dialog-header")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("edit-text-dialog-header")
+    ).not.toBeInTheDocument();
   });
-  const quizIncorrectFeedback = screen.getByTestId("quiz-edit-dialog-content-question-feedback-false-0");
+  const quizIncorrectFeedback = screen.getByTestId(
+    "quiz-edit-dialog-content-question-feedback-false-0"
+  );
   expect(quizIncorrectFeedback).toBeInTheDocument();
-  expect(quizIncorrectFeedback).toHaveTextContent(quizQuestionIncorrectFeedback + newIncorrectFeedback);
+  expect(quizIncorrectFeedback).toHaveTextContent(
+    quizQuestionIncorrectFeedback + newIncorrectFeedback
+  );
 });
 
 test("clicking quiz question unselected answer toggles it as correct answer", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizQuestionAnswerUnselected = screen.getByTestId(
     "quiz-edit-dialog-content-question-answer-unselected-0-1"
   );
@@ -435,14 +497,12 @@ test("clicking quiz question unselected answer toggles it as correct answer", as
 });
 
 test("clicking add question adds a question to the quiz", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   // question 2 doesnt exist
   expect(
     screen.queryByTestId("quiz-edit-dialog-content-question-text-1")
@@ -461,14 +521,12 @@ test("clicking add question adds a question to the quiz", async () => {
 });
 
 test("clicking delete question removes the only question and disables submit", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true}/>,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   // submit is enabled because there's at least 1 question
   expect(
     screen.getByTestId("quiz-edit-dialog-submit-button")
@@ -487,14 +545,12 @@ test("clicking delete question removes the only question and disables submit", a
 });
 
 test("clicking delete answer removes the answer", async () => {
-  renderWithProviders(
-    <QuizEditDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizEditDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_EDIT },
+    },
+  });
   const quizAnswerText = screen.getByTestId(
     "quiz-edit-dialog-content-question-answer-text-0-1"
   );
@@ -510,7 +566,9 @@ test("clicking delete answer removes the answer", async () => {
     ).not.toBeInTheDocument();
   });
 
-  const quizAnswerAddButton = screen.getByTestId("quiz-edit-dialog-content-question-add-answer-button-0");
+  const quizAnswerAddButton = screen.getByTestId(
+    "quiz-edit-dialog-content-question-add-answer-button-0"
+  );
   expect(quizAnswerAddButton).toBeInTheDocument();
   fireEvent.click(quizAnswerAddButton);
   await waitFor(() => {

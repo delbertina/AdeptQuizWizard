@@ -12,16 +12,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentQuiz, setCurrentQuiz } from "../../store/quizSlice";
 import { selectScores } from "../../store/scoreSlice";
 import { NO_SCORE_DISPLAY } from "../../shared/constants";
-import { setDialog } from "../../store/dialogSlice";
+import { selectDialog, setDialog } from "../../store/dialogSlice";
 import { NewQuiz } from "../../types/quiz";
+import { DIALOG_NAME } from "../../types/dialog";
 
-export interface QuizScoreDialogProps {
-  isDialogOpen: boolean;
-}
-
-function QuizScoreDialog(props: QuizScoreDialogProps) {
+function QuizScoreDialog() {
   const quiz = useSelector(selectCurrentQuiz);
   const scores = useSelector(selectScores);
+  const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
   const closeDialog = () => {
@@ -32,7 +30,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
   return (
     <>
       <Dialog
-        open={props.isDialogOpen}
+        open={dialog === DIALOG_NAME.SCORE_VIEW}
         onClose={closeDialog}
         fullWidth={true}
         maxWidth={"sm"}

@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import QuizViewDialog from "./QuizViewDialog";
 import { renderWithProviders } from "../../shared/test-utils";
 import { Quiz } from "../../types/quiz";
+import { DIALOG_NAME } from "../../types/dialog";
 
 const quizTitle = "Test Quiz Title";
 const quizQuestionText = "Question Text";
@@ -43,68 +44,68 @@ const testQuiz: Quiz = {
 };
 
 test("renders quiz title", () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
   const quizTitleDisplay = screen.getByText(quizTitle, { exact: false });
   expect(quizTitleDisplay).toBeInTheDocument();
 });
 
 test("close button calls dialog close", async () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
   const quizCloseButton = screen.getByTestId("quiz-view-dialog-close-button");
   expect(quizCloseButton).toBeInTheDocument();
   fireEvent.click(quizCloseButton);
-  // await waitFor(() => {
-  //   expect(onSubmit).toBeCalledTimes(1);
-  // });
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-view-dialog-close-button")
+    ).not.toBeInTheDocument();
+  });
 });
 
 test("escape button calls dialog close", async () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
-  );
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
   const quizHeader = screen.getByTestId("quiz-view-dialog-header");
   fireEvent.keyDown(quizHeader, {
     key: "Escape",
     keyCode: 27,
-    which: 27
+    which: 27,
   });
-  // await waitFor(() => {
-  //   expect(onSubmit).toBeCalledTimes(1);
-  // });
-})
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-view-dialog-close-button")
+    ).not.toBeInTheDocument();
+  });
+});
 
 test("renders correct feedback when correct answer clicked", async () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
+  const quizCorrectAnswer = screen.getByTestId(
+    "quiz-view-content-question-item-0-0"
   );
-  const quizCorrectAnswer = screen.getByTestId("quiz-view-content-question-item-0-0");
   expect(quizCorrectAnswer).toBeInTheDocument();
   fireEvent.click(quizCorrectAnswer);
-  const checkAnswerButton = screen.getByTestId("quiz-view-content-question-check-button-0");
+  const checkAnswerButton = screen.getByTestId(
+    "quiz-view-content-question-check-button-0"
+  );
   expect(checkAnswerButton).toBeInTheDocument();
   await waitFor(() => {
     expect(checkAnswerButton).not.toBeDisabled();
@@ -118,18 +119,20 @@ test("renders correct feedback when correct answer clicked", async () => {
 });
 
 test("renders incorrect feedback when incorrect answer clicked", async () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
+  const quizIncorrectAnswer = screen.getByTestId(
+    "quiz-view-content-question-item-0-1"
   );
-  const quizIncorrectAnswer = screen.getByTestId("quiz-view-content-question-item-0-1");
   expect(quizIncorrectAnswer).toBeInTheDocument();
   fireEvent.click(quizIncorrectAnswer);
-  const checkAnswerButton = screen.getByTestId("quiz-view-content-question-check-button-0");
+  const checkAnswerButton = screen.getByTestId(
+    "quiz-view-content-question-check-button-0"
+  );
   expect(checkAnswerButton).toBeInTheDocument();
   await waitFor(() => {
     expect(checkAnswerButton).not.toBeDisabled();
@@ -143,18 +146,20 @@ test("renders incorrect feedback when incorrect answer clicked", async () => {
 });
 
 test("returns score on quiz completion", async () => {
-  renderWithProviders(
-    <QuizViewDialog isDialogOpen={true} />,
-    {
-      preloadedState: {
-        quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
-      },
-    }
+  renderWithProviders(<QuizViewDialog />, {
+    preloadedState: {
+      quiz: { quizzes: [], nextIndex: 1, current: testQuiz },
+      dialog: { open: DIALOG_NAME.QUIZ_VIEW },
+    },
+  });
+  const quizCorrectAnswer = screen.getByTestId(
+    "quiz-view-content-question-item-0-0"
   );
-  const quizCorrectAnswer = screen.getByTestId("quiz-view-content-question-item-0-0");
   expect(quizCorrectAnswer).toBeInTheDocument();
   fireEvent.click(quizCorrectAnswer);
-  const checkAnswerButton1 = screen.getByTestId("quiz-view-content-question-check-button-0");
+  const checkAnswerButton1 = screen.getByTestId(
+    "quiz-view-content-question-check-button-0"
+  );
   expect(checkAnswerButton1).toBeInTheDocument();
   await waitFor(() => {
     expect(checkAnswerButton1).not.toBeDisabled();
@@ -166,10 +171,14 @@ test("returns score on quiz completion", async () => {
     ).toHaveTextContent(quizQuestionCorrectFeedback);
   });
 
-  const quizIncorrectAnswer = screen.getByTestId("quiz-view-content-question-item-1-1");
+  const quizIncorrectAnswer = screen.getByTestId(
+    "quiz-view-content-question-item-1-1"
+  );
   expect(quizIncorrectAnswer).toBeInTheDocument();
   fireEvent.click(quizIncorrectAnswer);
-  const checkAnswerButton2 = screen.getByTestId("quiz-view-content-question-check-button-1");
+  const checkAnswerButton2 = screen.getByTestId(
+    "quiz-view-content-question-check-button-1"
+  );
   await waitFor(() => {
     expect(checkAnswerButton2).not.toBeDisabled();
   });
@@ -184,7 +193,9 @@ test("returns score on quiz completion", async () => {
   expect(submitButton).toBeInTheDocument();
   expect(submitButton).toBeEnabled();
   fireEvent.click(submitButton);
-  // await waitFor(() => {
-  //   expect(onSubmit).toBeCalledTimes(1);
-  // })
+  await waitFor(() => {
+    expect(
+      screen.queryByTestId("quiz-view-dialog-close-button")
+    ).not.toBeInTheDocument();
+  });
 });

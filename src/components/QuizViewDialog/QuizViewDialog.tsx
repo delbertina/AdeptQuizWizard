@@ -19,25 +19,23 @@ import { useEffect, useState } from "react";
 import { selectCurrentQuiz, setCurrentQuiz } from "../../store/quizSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { addScore } from "../../store/scoreSlice";
-import { setDialog } from "../../store/dialogSlice";
+import { selectDialog, setDialog } from "../../store/dialogSlice";
 import { NewQuiz } from "../../types/quiz";
+import { DIALOG_NAME } from "../../types/dialog";
 
-export interface QuizViewDialogProps {
-  isDialogOpen: boolean;
-}
-
-function QuizViewDialog(props: QuizViewDialogProps) {
+function QuizViewDialog() {
   const [selectedAnswers, setSelectedAnswers] = useState<Array<number>>([]);
   const [checkedAnswers, setCheckedAnswers] = useState<Array<number>>([]);
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   const quiz = useSelector(selectCurrentQuiz);
+  const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
   const closeModal = (): void => {
     dispatch(setDialog(null));
     dispatch(setCurrentQuiz(NewQuiz));
-  }
+  };
 
   const handleQuizSubmit = (): void => {
     const correctAns = quiz.questions.filter(
@@ -77,7 +75,7 @@ function QuizViewDialog(props: QuizViewDialogProps) {
   return (
     <>
       <Dialog
-        open={props.isDialogOpen}
+        open={dialog === DIALOG_NAME.QUIZ_VIEW}
         onClose={closeModal}
         fullWidth={true}
         maxWidth={"md"}
@@ -86,7 +84,10 @@ function QuizViewDialog(props: QuizViewDialogProps) {
         aria-describedby="quiz-view-dialog-description"
       >
         {/* header toolbar */}
-        <DialogTitle id="quiz-view-dialog-header" data-testid="quiz-view-dialog-header">
+        <DialogTitle
+          id="quiz-view-dialog-header"
+          data-testid="quiz-view-dialog-header"
+        >
           <div id="quiz-view-dialog-title-column">
             <Typography
               gutterBottom
@@ -137,7 +138,12 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                     <ListItem key={aIndex}>
                       <ListItemButton
                         onClick={() => handleAnswerSelect(qIndex, answer.id)}
-                        data-testid={"quiz-view-content-question-item-" + qIndex + "-" + aIndex}
+                        data-testid={
+                          "quiz-view-content-question-item-" +
+                          qIndex +
+                          "-" +
+                          aIndex
+                        }
                         disabled={
                           checkedAnswers.length > qIndex &&
                           checkedAnswers[qIndex] > -1
@@ -160,7 +166,9 @@ function QuizViewDialog(props: QuizViewDialogProps) {
               <div className="quiz-view-content-questions-check row">
                 {checkedAnswers[qIndex] === -1 && (
                   <Button
-                    data-testid={"quiz-view-content-question-check-button-" + qIndex}
+                    data-testid={
+                      "quiz-view-content-question-check-button-" + qIndex
+                    }
                     variant="contained"
                     onClick={() => handleAnswerCheck(qIndex)}
                     disabled={
@@ -179,7 +187,9 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                       {checkedAnswers[qIndex] === question.correctAnswerId && (
                         <Alert
                           className="quiz-view-content-questions-check-alert"
-                          data-testid={"quiz-view-content-question-check-alert-" + qIndex}
+                          data-testid={
+                            "quiz-view-content-question-check-alert-" + qIndex
+                          }
                           severity="success"
                         >
                           {question.feedbackTrue}
@@ -188,7 +198,9 @@ function QuizViewDialog(props: QuizViewDialogProps) {
                       {checkedAnswers[qIndex] !== question.correctAnswerId && (
                         <Alert
                           className="quiz-view-content-questions-check-alert"
-                          data-testid={"quiz-view-content-question-check-alert-" + qIndex}
+                          data-testid={
+                            "quiz-view-content-question-check-alert-" + qIndex
+                          }
                           severity="error"
                         >
                           {question.feedbackFalse}
