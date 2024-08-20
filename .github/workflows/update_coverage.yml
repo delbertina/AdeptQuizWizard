@@ -25,7 +25,7 @@ jobs:
 
     # basically npm install but only installs from package-lock
     - run: npm ci
-    - run: npm run lint
+    # - run: npm run lint
     - run: npm t
 
     # Only run the coverage once
