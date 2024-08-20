@@ -21,16 +21,36 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import EditTextDialog from "../EditTextDialog/EditTextDialog";
-import { Quiz } from "../../types/quiz";
+import { NewQuiz, Quiz } from "../../types/quiz";
 import { useDispatch, useSelector } from "react-redux";
-import { addQuiz, selectCurrentQuiz, updateQuiz } from "../../store/quizSlice";
+import {
+  addQuiz,
+  selectCurrentQuiz,
+  setCurrentQuiz,
+  updateQuiz,
+} from "../../store/quizSlice";
+import {
+  QUIZEDITDIALOG_EDITFEEDBACK_DIALOGTITLE,
+  QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_CORRECT,
+  QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_INCORRECT,
+  QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGDESCRIPTION,
+  QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGTITLE,
+  QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGDESCRIPTION,
+  QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGTITLE,
+  QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGDESCRIPTION,
+  QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGTITLE,
+  QUIZEDITDIALOG_EDITTITLE_DIALOGDESCRIPTION,
+  QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL,
+  QUIZEDITDIALOG_EDITTITLE_DIALOGTITLE,
+} from "../../shared/constants";
+import { selectDialog, setDialog } from "../../store/dialogSlice";
+import { DIALOG_NAME } from "../../types/dialog";
 
-export interface QuizEditDialogProps {
-  isDialogOpen: boolean;
-  handleDialogClose: () => void;
-}
-
-function QuizEditDialog(props: QuizEditDialogProps) {
+function QuizEditDialog() {
   const [isEditQuizTitleDialogOpen, setIsEditQuizTitleDialogOpen] =
     useState<boolean>(false);
   const [isEditQuizDescDialogOpen, setIsEditQuizDescDialogOpen] =
@@ -45,25 +65,27 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   ] = useState<boolean>(false);
   const [isEditCorrectFeedback, setIsEditCorrectFeedback] =
     useState<boolean>(true);
-  const [quiz, setQuiz] = useState<Quiz | undefined>();
+  const [quiz, setQuiz] = useState<Quiz>(NewQuiz);
   const [editQIndex, setEditQIndex] = useState<number>(-1);
   const [editAIndex, setEditAIndex] = useState<number>(-1);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(true);
 
   const initialQuiz = useSelector(selectCurrentQuiz);
+  const dialog = useSelector(selectDialog);
   const dispatch = useDispatch();
 
-  const handleSubmit = (): void => {
-    if (!quiz) {
-      return;
-    }
+  const closeDialog = (): void => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
+  };
 
+  const handleSubmit = (): void => {
     if (!!quiz.id) {
       dispatch(updateQuiz(quiz));
     } else {
       dispatch(addQuiz(quiz));
     }
-    props.handleDialogClose();
+    closeDialog();
   };
 
   const handleEditQuizTitleOpen = (): void => {
@@ -149,9 +171,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleAddQuestion = (): void => {
-    if (!quiz) {
-      return;
-    }
     const tempQuiz = quiz;
     const maxIndex = Math.max(
       ...tempQuiz.questions.map((question) => question.id)
@@ -169,9 +188,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleDeleteQuestion = (qIndex: number): void => {
-    if (!quiz) {
-      return;
-    }
     const tempQuiz = quiz;
     tempQuiz.questions = tempQuiz.questions.filter(
       (question) => question.id !== qIndex
@@ -180,9 +196,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleAddAnswer = (qIndex: number): void => {
-    if (!quiz) {
-      return;
-    }
     const tempQuiz = quiz;
     const maxIndex = Math.max(
       ...tempQuiz.questions[qIndex].answers.map((answer) => answer.id),
@@ -196,9 +209,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleDeleteAnswer = (qIndex: number, aIndex: number): void => {
-    if (!quiz) {
-      return;
-    }
     const tempQuiz = quiz;
     tempQuiz.questions[qIndex].answers = tempQuiz.questions[
       qIndex
@@ -207,9 +217,6 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   };
 
   const handleSelectCorrectAnswer = (qindex: number, aindex: number): void => {
-    if (!quiz) {
-      return;
-    }
     const tempQuiz = quiz;
     tempQuiz.questions[qindex].correctAnswerId = aindex;
     setQuiz({ ...tempQuiz });
@@ -228,14 +235,14 @@ function QuizEditDialog(props: QuizEditDialogProps) {
   }, [quiz]);
 
   useEffect(() => {
-    setQuiz({...initialQuiz});
+    setQuiz(JSON.parse(JSON.stringify(initialQuiz)));
   }, [initialQuiz]);
 
   return (
     <>
       <Dialog
-        open={props.isDialogOpen}
-        onClose={() => props.handleDialogClose()}
+        open={dialog === DIALOG_NAME.QUIZ_EDIT}
+        onClose={closeDialog}
         fullWidth={true}
         maxWidth={"md"}
         scroll="paper"
@@ -243,11 +250,15 @@ function QuizEditDialog(props: QuizEditDialogProps) {
         aria-describedby="quiz-edit-dialog-description"
       >
         {/* header toolbar */}
-        <DialogTitle id="quiz-edit-dialog-header">
+        <DialogTitle
+          id="quiz-edit-dialog-header"
+          data-testid="quiz-edit-dialog-header"
+        >
           <div id="quiz-edit-dialog-title-column">
             <Typography
               gutterBottom
               id="quiz-edit-dialog-title"
+              data-testid="quiz-edit-dialog-title"
               variant="h5"
               component="div"
             >
@@ -256,6 +267,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             <Typography
               gutterBottom
               id="quiz-edit-dialog-description"
+              data-testid="quiz-edit-dialog-description"
               variant="body1"
               component="div"
             >
@@ -269,6 +281,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             <Typography
               gutterBottom
               id="quiz-edit-dialog-quiz-title"
+              data-testid="quiz-edit-dialog-quiz-title"
               variant="h5"
               component="div"
             >
@@ -276,6 +289,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             </Typography>
             <IconButton
               aria-label="edit-text"
+              data-testid="quiz-edit-dialog-quiz-title-edit-button"
               color="warning"
               onClick={() => handleEditQuizTitleOpen()}
             >
@@ -286,6 +300,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             <Typography
               gutterBottom
               id="quiz-edit-dialog-quiz-description"
+              data-testid="quiz-edit-dialog-quiz-description"
               variant="body1"
               component="div"
             >
@@ -293,6 +308,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             </Typography>
             <IconButton
               aria-label="edit-text"
+              data-testid="quiz-edit-dialog-quiz-description-edit-button"
               color="warning"
               onClick={() => handleEditQuizDescriptionOpen()}
             >
@@ -306,6 +322,7 @@ function QuizEditDialog(props: QuizEditDialogProps) {
             </Typography>
             <IconButton
               aria-label="add question"
+              data-testid="quiz-edit-dialog-question-add-button"
               color="success"
               onClick={() => handleAddQuestion()}
             >
@@ -329,7 +346,11 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                     </div>
                     <Typography
                       gutterBottom
-                      id="quiz-edit-dialog-content-question-text"
+                      className="quiz-edit-dialog-content-question-text"
+                      id={"quiz-edit-dialog-content-question-text-" + qindex}
+                      data-testid={
+                        "quiz-edit-dialog-content-question-text-" + qindex
+                      }
                       variant="h6"
                       component="div"
                     >
@@ -338,12 +359,20 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                   </div>
                   <div className="quiz-edit-dialog-content-question-text-end-actions row">
                     <IconButton
+                      data-testid={
+                        "quiz-edit-dialog-content-question-add-answer-button-" +
+                        qindex
+                      }
                       color="success"
                       onClick={() => handleAddAnswer(qindex)}
                     >
                       <Add />
                     </IconButton>
                     <IconButton
+                      data-testid={
+                        "quiz-edit-dialog-content-question-edit-button-" +
+                        qindex
+                      }
                       aria-label="edit-text"
                       color="warning"
                       onClick={() => handleEditQuestionTextOpen(qindex)}
@@ -351,6 +380,10 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                       <Edit />
                     </IconButton>
                     <IconButton
+                      data-testid={
+                        "quiz-edit-dialog-content-question-delete-button-" +
+                        qindex
+                      }
                       aria-label="delete question"
                       color="error"
                       onClick={() => handleDeleteQuestion(question.id)}
@@ -367,22 +400,48 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                     >
                       <div className="quiz-edit-dialog-content-question-answer-row-start-actions">
                         <IconButton
+                          data-testid={
+                            "quiz-edit-dialog-content-question-answer-select-" +
+                            qindex +
+                            "-" +
+                            aindex
+                          }
                           onClick={() =>
                             handleSelectCorrectAnswer(qindex, answer.id)
                           }
                         >
                           {answer.id ===
                             quiz.questions[qindex].correctAnswerId && (
-                            <Circle />
+                            <Circle
+                              data-testid={
+                                "quiz-edit-dialog-content-question-answer-selected-" +
+                                qindex +
+                                "-" +
+                                aindex
+                              }
+                            />
                           )}
                           {answer.id !==
                             quiz.questions[qindex].correctAnswerId && (
-                            <CircleOutlined />
+                            <CircleOutlined
+                              data-testid={
+                                "quiz-edit-dialog-content-question-answer-unselected-" +
+                                qindex +
+                                "-" +
+                                aindex
+                              }
+                            />
                           )}
                         </IconButton>
                       </div>
                       <Typography
                         className="quiz-edit-dialog-content-question-answer-row-text"
+                        data-testid={
+                          "quiz-edit-dialog-content-question-answer-text-" +
+                          qindex +
+                          "-" +
+                          aindex
+                        }
                         variant="body1"
                         component="div"
                       >
@@ -390,6 +449,12 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                       </Typography>
                       <div className="quiz-edit-dialog-content-question-answer-row-end-actions">
                         <IconButton
+                          data-testid={
+                            "quiz-edit-dialog-content-question-answer-edit-button-" +
+                            qindex +
+                            "-" +
+                            aindex
+                          }
                           aria-label="edit-text"
                           color="warning"
                           onClick={() =>
@@ -399,6 +464,12 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                           <Edit />
                         </IconButton>
                         <IconButton
+                          data-testid={
+                            "quiz-edit-dialog-content-question-answer-delete-button-" +
+                            qindex +
+                            "-" +
+                            aindex
+                          }
                           aria-label="delete question"
                           color="error"
                           onClick={() => handleDeleteAnswer(qindex, answer.id)}
@@ -413,12 +484,20 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                   <div className="quiz-edit-dialog-content-question-feedback-row row">
                     <Alert
                       className="quiz-edit-dialog-feedback-alert"
+                      data-testid={
+                        "quiz-edit-dialog-content-question-feedback-true-" +
+                        qindex
+                      }
                       severity="success"
                     >
                       {question.feedbackTrue}
                     </Alert>
                     <div>
                       <IconButton
+                        data-testid={
+                          "quiz-edit-dialog-content-question-feedback-true-button-" +
+                          qindex
+                        }
                         aria-label="edit-correct-feedback"
                         color="warning"
                         onClick={() => handleEditFeedbackTextOpen(true, qindex)}
@@ -430,12 +509,20 @@ function QuizEditDialog(props: QuizEditDialogProps) {
                   <div className="quiz-edit-dialog-content-question-feedback-row row">
                     <Alert
                       className="quiz-edit-dialog-feedback-alert"
+                      data-testid={
+                        "quiz-edit-dialog-content-question-feedback-false-" +
+                        qindex
+                      }
                       severity="error"
                     >
                       {question.feedbackFalse}
                     </Alert>
                     <div>
                       <IconButton
+                        data-testid={
+                          "quiz-edit-dialog-content-question-feedback-false-button-" +
+                          qindex
+                        }
                         aria-label="edit-false-feedback"
                         color="warning"
                         onClick={() =>
@@ -453,11 +540,17 @@ function QuizEditDialog(props: QuizEditDialogProps) {
           {/* footer close & submit */}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => props.handleDialogClose()}>Cancel</Button>
           <Button
+            data-testid="quiz-edit-dialog-cancel-button"
+            onClick={closeDialog}
+          >
+            Cancel
+          </Button>
+          <Button
+            data-testid="quiz-edit-dialog-submit-button"
             variant="contained"
             onClick={() => handleSubmit()}
-            disabled={isSubmitDisabled}
+            disabled={isSubmitDisabled ? true : false}
           >
             Submit
           </Button>
@@ -466,19 +559,19 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       {/* Edit Quiz Title */}
       <EditTextDialog
         isDialogOpen={isEditQuizTitleDialogOpen}
-        dialogTitle="Edit Quiz Title"
-        dialogDescription="Update the title of the quiz."
-        dialogFieldLabel="Quiz Title"
-        dialogFieldValue={quiz?.title ?? ""}
+        dialogTitle={QUIZEDITDIALOG_EDITTITLE_DIALOGTITLE}
+        dialogDescription={QUIZEDITDIALOG_EDITTITLE_DIALOGDESCRIPTION}
+        dialogFieldLabel={QUIZEDITDIALOG_EDITTITLE_DIALOGFIELDLABEL}
+        dialogFieldValue={quiz.title}
         handleDialogClose={(edited?: string) => handleEditQuizTitle(edited)}
       />
       {/* Edit Quiz Description */}
       <EditTextDialog
         isDialogOpen={isEditQuizDescDialogOpen}
-        dialogTitle="Edit Quiz Description"
-        dialogDescription="Describe what this quiz is about."
-        dialogFieldLabel="Quiz Description"
-        dialogFieldValue={quiz?.description ?? ""}
+        dialogTitle={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGTITLE}
+        dialogDescription={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGDESCRIPTION}
+        dialogFieldLabel={QUIZEDITDIALOG_EDITDESCRIPTION_DIALOGFIELDLABEL}
+        dialogFieldValue={quiz.description}
         handleDialogClose={(edited?: string) =>
           handleEditQuizDescription(edited)
         }
@@ -486,9 +579,9 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       {/* Edit Question Text */}
       <EditTextDialog
         isDialogOpen={isEditQuesTextDialogOpen}
-        dialogTitle="Edit Question Text"
-        dialogDescription="What question do you want to ask the user?"
-        dialogFieldLabel="Question"
+        dialogTitle={QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGTITLE}
+        dialogDescription={QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGDESCRIPTION}
+        dialogFieldLabel={QUIZEDITDIALOG_EDITQUESTIONTEXT_DIALOGFIELDLABEL}
         dialogFieldValue={
           !!quiz && quiz?.questions.length > editQIndex && editQIndex !== -1
             ? quiz.questions[editQIndex].text
@@ -499,9 +592,9 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       {/* Edit Answer Text */}
       <EditTextDialog
         isDialogOpen={isEditAnsTextDialogOpen}
-        dialogTitle="Edit Answer Text"
-        dialogDescription="Update the question answer option."
-        dialogFieldLabel="Answer"
+        dialogTitle={QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGTITLE}
+        dialogDescription={QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGDESCRIPTION}
+        dialogFieldLabel={QUIZEDITDIALOG_EDITANSWERTEXT_DIALOGFIELDLABEL}
         dialogFieldValue={
           !!quiz &&
           quiz.questions.length > editQIndex &&
@@ -516,13 +609,13 @@ function QuizEditDialog(props: QuizEditDialogProps) {
       {/* Edit Question Feedback */}
       <EditTextDialog
         isDialogOpen={isEditQuesFeedbackTextDialogOpen}
-        dialogTitle="Edit Question Feedback"
+        dialogTitle={QUIZEDITDIALOG_EDITFEEDBACK_DIALOGTITLE}
         dialogDescription={
-          "What feedback should the user get when they answer " +
-          (isEditCorrectFeedback ? "correctly" : "incorrectly") +
-          "?"
+          isEditCorrectFeedback
+            ? QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_CORRECT
+            : QUIZEDITDIALOG_EDITFEEDBACK_DIALOGDESCRIPTION_INCORRECT
         }
-        dialogFieldLabel="Feedback"
+        dialogFieldLabel={QUIZEDITDIALOG_EDITFEEDBACK_DIALOGFIELDLABEL}
         dialogFieldValue={
           !!quiz && quiz?.questions.length > editQIndex && editQIndex !== -1
             ? isEditCorrectFeedback

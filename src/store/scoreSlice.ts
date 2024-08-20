@@ -20,27 +20,25 @@ export const scoreSlice = createSlice({
   },
   reducers: {
     addScore: (state, action: PayloadAction<Score>) => {
-      if (action.payload.id === 0) {
-        // if the id is 0, it's a new score
-        action.payload.id = state.nextIndex;
-        state.nextIndex++;
-      }
+      // always treat add as a brand new score
+      action.payload.id = state.nextIndex;
+      state.nextIndex++;
       state.scores = [...state.scores, action.payload];
     },
-    updateScore: (state, action: PayloadAction<Score>) => {
-      state.scores = [
-        ...state.scores.filter((score) => score.id !== action.payload.id),
-        action.payload,
-      ];
-    },
-    removeScore: (state, action: PayloadAction<number>) => {
-      state.scores = [
-        ...state.scores.filter((score) => score.id !== action.payload),
-      ];
-    },
+    // updateScore: (state, action: PayloadAction<Score>) => {
+    //   state.scores = [
+    //     ...state.scores.filter((score) => score.id !== action.payload.id),
+    //     action.payload,
+    //   ];
+    // },
+    // removeScore: (state, action: PayloadAction<number>) => {
+    //   state.scores = [
+    //     ...state.scores.filter((score) => score.id !== action.payload),
+    //   ];
+    // },
   },
 });
 
 export const { selectScores } = scoreSlice.selectors;
-export const { addScore, updateScore, removeScore } = scoreSlice.actions;
+export const { addScore } = scoreSlice.actions;
 export default scoreSlice.reducer;

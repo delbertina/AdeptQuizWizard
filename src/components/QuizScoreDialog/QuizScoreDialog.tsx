@@ -8,24 +8,30 @@ import {
   IconButton,
 } from "@mui/material";
 import { average, formatScore } from "../../shared/helper";
-import { useSelector } from "react-redux";
-import { selectCurrentQuiz } from "../../store/quizSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentQuiz, setCurrentQuiz } from "../../store/quizSlice";
 import { selectScores } from "../../store/scoreSlice";
+import { NO_SCORE_DISPLAY } from "../../shared/constants";
+import { selectDialog, setDialog } from "../../store/dialogSlice";
+import { NewQuiz } from "../../types/quiz";
+import { DIALOG_NAME } from "../../types/dialog";
 
-export interface QuizScoreDialogProps {
-  isDialogOpen: boolean;
-  handleDialogClose: () => void;
-}
-
-function QuizScoreDialog(props: QuizScoreDialogProps) {
+function QuizScoreDialog() {
   const quiz = useSelector(selectCurrentQuiz);
   const scores = useSelector(selectScores);
+  const dialog = useSelector(selectDialog);
+  const dispatch = useDispatch();
+
+  const closeDialog = () => {
+    dispatch(setDialog(null));
+    dispatch(setCurrentQuiz(NewQuiz));
+  }
 
   return (
     <>
       <Dialog
-        open={props.isDialogOpen}
-        onClose={() => props.handleDialogClose()}
+        open={dialog === DIALOG_NAME.SCORE_VIEW}
+        onClose={closeDialog}
         fullWidth={true}
         maxWidth={"sm"}
         scroll="paper"
@@ -33,7 +39,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
         aria-describedby="quiz-score-dialog-description"
       >
         {/* header toolbar */}
-        <DialogTitle id="quiz-score-dialog-header">
+        <DialogTitle id="quiz-score-dialog-header" data-testid="quiz-score-dialog-header">
           <div id="quiz-score-dialog-title-column">
             <Typography
               gutterBottom
@@ -46,27 +52,29 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
             <Typography
               gutterBottom
               id="quiz-score-dialog-description"
+              data-testid="quiz-score-dialog-description"
               variant="body1"
               component="div"
             >
               {"Avg Score: " +
                 (scores.length
-                  ? Math.round(
+                  ? formatScore(
                       average(
                         scores
                           // Maybe add filter to only scores after the last edit of the quiz
-                          .map((score) => score.result) ?? []
+                          .map((score) => score.result)
                       )
                     ) + "%"
-                  : "<None>")}
+                  : NO_SCORE_DISPLAY)}
             </Typography>
           </div>
           <div>
             <IconButton
               aria-label="close score dialog"
+              data-testid="score-dialog-close-button"
               color="error"
               size="large"
-              onClick={() => props.handleDialogClose()}
+              onClick={closeDialog}
             >
               <Close />
             </IconButton>
@@ -80,6 +88,7 @@ function QuizScoreDialog(props: QuizScoreDialogProps) {
             .map((score, i) => (
               <div
                 key={i}
+                data-testid={"quiz-score-dialog-content-row-" + i}
                 className={
                   "quiz-score-dialog-content-row " +
                   (score.timestamp < quiz.modified

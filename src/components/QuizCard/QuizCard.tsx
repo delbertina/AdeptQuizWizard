@@ -10,29 +10,49 @@ import {
 import { Score } from "../../types/score";
 import QuizCardFooter from "../QuizCardFooter/QuizCardFooter";
 import { Quiz } from "../../types/quiz";
+import { useDispatch } from "react-redux";
+import { setCurrentQuiz } from "../../store/quizSlice";
+import { setDialog } from "../../store/dialogSlice";
+import { DIALOG_NAME } from "../../types/dialog";
 
 export interface QuizCardProps {
   quiz: Quiz;
   scores: Score[];
-  onClick: () => void;
-  onEditClick: () => void;
-  onScoreClick: () => void;
 }
 
 function QuizCard(props: QuizCardProps) {
+  const dispatch = useDispatch();
+
+  const handleCardClick = (): void => {
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.QUIZ_VIEW));
+  }
+  
   const handleEditClick = (e: React.MouseEvent): void => {
     e.stopPropagation();
-    props.onEditClick();
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.QUIZ_EDIT));
   };
+
+  const handleFooterClick = (): void => {
+    dispatch(setCurrentQuiz(props.quiz));
+    dispatch(setDialog(DIALOG_NAME.SCORE_VIEW));
+  }
 
   return (
     <>
-      <Card onClick={() => props.onClick()} className="quiz-card">
+      <Card
+        onClick={handleCardClick}
+        className="quiz-card"
+        data-testid="quiz-card"
+      >
         <CardHeader
           className="quiz-card-header"
+          data-testid="quiz-card-header"
           title={
             <Typography
               className="quiz-card-header-title"
+              data-testid="quiz-card-header-title"
               variant="h6"
               component="h2"
             >
@@ -42,13 +62,17 @@ function QuizCard(props: QuizCardProps) {
           action={
             <IconButton
               aria-label="edit"
+              data-testid="quiz-card-edit-button"
               onClick={(e: React.MouseEvent) => handleEditClick(e)}
             >
               <Edit />
             </IconButton>
           }
         ></CardHeader>
-        <CardContent className="quiz-card-content">
+        <CardContent
+          className="quiz-card-content"
+          data-testid="quiz-card-content"
+        >
           <Typography
             sx={{
               overflow: "hidden",
@@ -59,12 +83,13 @@ function QuizCard(props: QuizCardProps) {
             }}
             gutterBottom
             className="quiz-card-description"
+            data-testid="quiz-card-description"
             variant="body1"
             component="div"
           >
             {props.quiz.description}
           </Typography>
-          <QuizCardFooter scores={props.scores} onClick={props.onScoreClick}/>
+          <QuizCardFooter scores={props.scores} onClick={handleFooterClick} />
         </CardContent>
       </Card>
     </>

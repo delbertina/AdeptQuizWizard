@@ -6,14 +6,11 @@ import "./HomePage.scss";
 export interface HomePageProps {
   quizzes: Quiz[];
   scores: Score[];
-  onQuizClick: (quiz: Quiz) => void;
-  onQuizEditClick: (quiz: Quiz) => void;
-  onQuizScoreClick: (quiz: Quiz) => void;
 }
 
 function HomePage(props: HomePageProps) {
   return (
-    <div className="row quiz-display-row">
+    <div className="row quiz-display-row" data-testid="quiz-display-row">
       {props.quizzes.slice()
         .sort((a, b) => b.modified - a.modified)
         .map((quiz, index) => (
@@ -21,9 +18,6 @@ function HomePage(props: HomePageProps) {
             key={index}
             quiz={quiz}
             scores={props.scores.filter((score) => score.quizId === quiz.id)}
-            onClick={() => props.onQuizClick(quiz)}
-            onEditClick={() => props.onQuizEditClick(quiz)}
-            onScoreClick={() => props.onQuizScoreClick(quiz)}
           ></QuizCard>
         ))}
     </div>

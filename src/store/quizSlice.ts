@@ -23,11 +23,9 @@ export const quizSlice = createSlice({
   },
   reducers: {
     addQuiz: (state, action: PayloadAction<Quiz>) => {
-      if (action.payload.id === 0) {
-        // if the id is 0, it's a new quiz
-        action.payload.id = state.nextIndex;
-        state.nextIndex++;
-      }
+      // always treat add as a brand new quiz
+      action.payload.id = state.nextIndex;
+      state.nextIndex++;
       state.quizzes = [action.payload, ...state.quizzes];
     },
     updateQuiz: (state, action: PayloadAction<Quiz>) => {
@@ -36,11 +34,11 @@ export const quizSlice = createSlice({
         ...state.quizzes.filter((quiz) => quiz.id !== action.payload.id),
       ];
     },
-    removeQuiz: (state, action: PayloadAction<number>) => {
-      state.quizzes = [
-        ...state.quizzes.filter((quiz) => quiz.id !== action.payload),
-      ];
-    },
+    // removeQuiz: (state, action: PayloadAction<number>) => {
+    //   state.quizzes = [
+    //     ...state.quizzes.filter((quiz) => quiz.id !== action.payload),
+    //   ];
+    // },
     setCurrentQuiz: (state, action: PayloadAction<Quiz>) => {
       state.current = action.payload;
     },
@@ -48,6 +46,6 @@ export const quizSlice = createSlice({
 });
 
 export const { selectCurrentQuiz, selectQuizzes } = quizSlice.selectors;
-export const { addQuiz, updateQuiz, removeQuiz, setCurrentQuiz } =
+export const { addQuiz, updateQuiz, setCurrentQuiz } =
   quizSlice.actions;
 export default quizSlice.reducer;
