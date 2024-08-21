@@ -1,7 +1,7 @@
 # Adept Quiz Wizard
 Originally was a take-home test that I spent some more time to build it out & add full test coverage.
 
-![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/delbertina/e94fc49a9f2207ad9da00f47a63e09e3/raw/AdeptQuizWizard__heads_main.json)
+![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/delbertina/e94fc49a9f2207ad9da00f47a63e09e3/raw/adept-quiz-wizard__heads_master.json)
 
 
 ###
